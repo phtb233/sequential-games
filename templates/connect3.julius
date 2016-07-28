@@ -1,0 +1,269 @@
+    var cells = [], $puzzle, X = "X", O = "O", whoseTurn, $whoseTurn, 
+    moves = [], turnSwitch, init, getOptimalPlay, checkWin, reset,
+    noughtOrCross, playerScore, opponentScore, $playerScore, 
+    $opponentScore, addPoint, onError, puzzleMouseOverHandler, $tick,
+    puzzleMouseOutHandler, $puzzle_wrapper, multiplayer, $cover, showMessageBox,
+    $puzzle_main, $messageBox, otherPlayer, game, emDivisor;
+
+
+    game = "connect3";
+    multiplayer = false;
+    checkWin = function(player){
+        fb = cells.map(function(c){ return c.filledBy; });
+        return fb[0] === player && fb[1] === player && fb[2] === player ||
+               fb[3] === player && fb[4] === player && fb[5] === player ||
+               fb[6] === player && fb[7] === player && fb[8] === player ||
+               fb[0] === player && fb[3] === player && fb[6] === player ||
+               fb[1] === player && fb[4] === player && fb[7] === player ||
+               fb[2] === player && fb[5] === player && fb[8] === player ||
+               fb[2] === player && fb[4] === player && fb[6] === player ||
+               fb[0] === player && fb[4] === player && fb[8] === player;
+    };
+
+    init = function(){
+        playerScore = opponentScore = 0;
+        $tick = $("<div>").addClass("tick-container").append("<span>")
+        .addClass("tick X");
+        $puzzle_main = $("#puzzle-main");
+        $playerScore = $("#player-1-info .score");
+        $opponentScore = $("#player-2-info .score");
+        $puzzle = $("#puzzle");
+        $puzzle_wrapper = $("#puzzle-wrapper");
+        $whoseTurn = $("#whoseTurn");
+        $puzzle.find(".cell").each(function(index){
+            cell = { 
+                "filledBy" : "",
+                "jq" : $(this)
+            };
+            cells.push(cell);
+            });
+        $puzzle.bind("click", puzzleClickHandler);
+        $puzzle.bind("mouseover", puzzleMouseOverHandler);
+        $puzzle.bind("mouseout", puzzleMouseOutHandler);
+        // X takes the first turn.
+        turnSwitch(X);
+    };
+
+    reset = function(startingPlayer){
+        // Clear the board for the next match, and alternate the first player.
+            $puzzle.unbind();
+            $(".piece").remove();
+            $tick.remove();
+            cells.forEach(function(cell){ 
+                cell.filledBy = "";
+                cell.jq.children(".hole").removeClass("X O");
+            });
+            moves = [];
+            turnSwitch(startingPlayer);
+    };
+
+    puzzleClickHandler = function(e) {
+        //FIXME:Click event firing during O's turn.
+        if(whoseTurn === O) return; 
+        var $thisCell, cellIndex, columnIndex, cell, col;
+        // Get whatever was clicked.
+        $thisCell = $(e.target);  
+        // If this wasn't a cell...
+        if(!$thisCell.hasClass("cell")){
+            // Look through all parents of this element that are cells.
+            var $cell = $thisCell.parents(".cell");
+            // If there were any, reference that cell. Otherwise, stop.
+            if($cell.length) $thisCell = $cell; else return;
+        }
+        cellIndex = $thisCell.index();
+        columnIndex = cellIndex % 3;
+        col = getColumn(cellIndex);
+        if(col.length < 3){
+            takeTurn(X, columnIndex);
+        }
+        // Don't highlight text when double clicking.
+        return false;
+    };
+
+    puzzleMouseOverHandler = function(e){
+        if(whoseTurn === O) return;
+        var $thisCell, cellIndex, columnIndex, cell, col;
+        // Get whatever was clicked.
+        $thisCell = $(e.target);  
+        // If this wasn't a cell...
+        if(!$thisCell.hasClass("cell")){
+            // Look through all parents of this element that are cells.
+            var $cell = $thisCell.parents(".cell");
+            // If there were any, reference that cell. Otherwise, stop.
+            if($cell.length) $thisCell = $cell; else return;
+        }
+        cellIndex = $thisCell.index();
+        columnIndex = cellIndex % 3;
+        col = getColumn(cellIndex);
+        if(col.length < 3){
+            $puzzle_wrapper.prepend($tick);
+            puzzleOffset = ($puzzle.width() / 3) * (columnIndex + 1);
+            tickMid = $tick.width();
+            $tick.css("left", (puzzleOffset - 
+                               tickMid - 3 - 
+                               $thisCell.width()/2) / emDivisor() + "em");
+            $tick.css("top", "-20%");
+        }
+        return false;
+    };
+
+    emDivisor = function(){
+        var fontSize = $(document.body).css("font-size");
+        return parseFloat(fontSize);
+    };
+
+    puzzleMouseOutHandler = function(e){
+        $tick.remove();
+    };
+
+    getColumn = function(cell){
+        return cells.filter(function(elem, index, array){
+            return (index % 3 === cell % 3) && elem.filledBy !== "";
+        });
+    };
+
+    addPoint = function(player){
+        // Add a point to this player's scoreboard, and update HUD.
+        if(player === X){
+            playerScore++;
+            $playerScore.text(playerScore);
+        } else {
+            opponentScore++;
+            $opponentScore.text(opponentScore);
+        }
+    };
+
+    takeTurn = function(player, move){
+        var col, len, index, cell, $cell, $hole, $piece, op;
+        if(whoseTurn !== player)
+            throw Error ("Turn taken by the wrong player.");
+        op = otherPlayer(player);
+        col = getColumn(move); 
+        len = col.length;
+        index = (2 - len) * 3 + move;
+        cell = cells[index];
+        $cell = cell.jq;
+        if(cell.filledBy !== "") throw Error ("move taken");
+        cell.filledBy = player;
+        $hole = $cell.children(".hole");
+        $piece = $hole.clone(false, true).addClass("piece " + player);
+        var sz = (($hole.width() + 2) / emDivisor()) + "em";
+        var lf = (($hole.position().left ) / emDivisor()) + "em";
+        //var fallPos = (($hole.position().top) / emDivisor()) + "em";
+        $piece.css( { 
+                "height"   : sz,
+                "width"    : sz,
+                "left"     : lf
+            }
+        );
+        $puzzle_wrapper.append($piece);
+        $piece.css("top", "-4em");
+        $piece.css("top", (($hole.position().top) / emDivisor()) + "em");
+        $cell.children(".hole").addClass(player);
+        moves.push(move);
+        // If you just played your move...
+        if(multiplayer && player === X){
+            // Send this move to the server.
+            $(document).trigger("sendMove", [move]);
+        }
+        if(checkWin(player)){
+            // Update scores.
+            addPoint(player);
+            showMessageBox("win", player);
+            return;
+        }
+        if(moves.length >= 9){
+            showMessageBox("draw");
+        } else {
+            turnSwitch(op);
+        }
+    };
+
+    turnSwitch = function(player){
+        switch (player){
+        case X: whoseTurn = X; 
+            $whoseTurn.text("It's your turn.");
+            $puzzle.bind("click", puzzleClickHandler);
+            $puzzle.bind("mouseover", puzzleMouseOverHandler);
+            $puzzle.bind("mouseout", puzzleMouseOutHandler);
+            break;
+        case O: whoseTurn = O; 
+            $whoseTurn.text("It's your opponent's turn.");
+            $puzzle.unbind();
+            $tick.remove();
+            if(multiplayer){
+                // Wait for server sent event response
+            } else {
+                // Use computer AI.
+                getOptimalPlay();
+            }
+            break;
+        default: throw Error("whoseTurn is undefined");
+        }
+    };
+
+    onError = function(){
+        // Pick a random, unchosen move.
+        console.log("random! response took too long.");
+        var allMoves = [0,1,2,0,1,2,0,1,2];
+        var possible = allMoves.filter(function(e, i, a){
+            return moves.indexOf(e) === -1;
+        });
+        var randomIndex = Math.floor(Math.random() * (possible.length)); 
+        takeTurn(O, possible[randomIndex]);
+    };
+
+    showMessageBox = function(drawOrWin, player){
+        var $message, $button, wonOrLost;
+        $puzzle.unbind("click", puzzleClickHandler);
+        $cover = $("<div id=\"cover\">");
+        $cover.css("opacity", 0.7);
+        $messageBox = $("<div id=\"messageBox\">");
+        $container = $("<div>");
+        $message = $("<p>");
+        wonOrLost = player === X ? "won" : "lost";
+        if(drawOrWin === "draw"){
+            $message.text("It's a draw.");
+        } else if (drawOrWin === "win"){
+            if(!player) throw Error("showMessageBox: winning player " +
+                        "was not specified.");
+            $message.text("You have " + wonOrLost + " the game.");
+        } else {
+            throw Error("showMessageBox: wrong arguments.");
+        }
+        $button = $("<button>");
+        $button.text("OK");
+        $button.on("click", function(e){
+            $cover.remove();
+            $messageBox.remove();
+            reset(otherPlayer(player));
+        });
+        setTimeout(function(){
+            $puzzle_main.append($cover);
+            $puzzle_main.append($messageBox);
+            $messageBox.append($container);
+            $container.append($message);
+            $container.append($button);
+        }, 2000);
+    };
+
+    otherPlayer = function(player){
+        if(player === X) return O;
+        return X;
+    };
+
+    getOptimalPlay = function(){
+        jQuery.ajax({
+                type: "POST",
+                url: "@{Connect3R}",
+                data: JSON.stringify(moves),
+                dataType: "json",
+                success: function(data){
+                    takeTurn(O, data);
+                },
+                timeout : 10000,
+                error : onError
+        });
+    };
+
+    init();

@@ -1,0 +1,79 @@
+#puzzle-main {
+    width: 80%;
+}
+
+.puzzle-row {
+    width: 100%;
+    height: 33.3%;
+}
+
+.cell {
+    background-color: transparent;
+    width: 33.3%;
+    height: 100%;
+    float: left;
+    border: #{ borderStyle };
+}
+
+.cell:first-child {
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+.cell:last-child {
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.puzzle-row:first-child {
+    .cell {
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+    }
+}
+
+.puzzle-row:last-child {
+    .cell {
+        border-bottom-color: transparent;
+        border-top-color: transparent;
+    }
+}
+
+.cell:hover {
+    background-color: #EEE;
+}
+
+.cell .cross, .cell .nought {
+    width: 0%;
+    height: 0%;
+    margin: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('@{StaticR img_tictactoe_png}');
+    ^{transition "width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out"}
+}
+
+.cross { background-position: 100%; }
+         /******     MEDIA QUERIES      ******/
+
+/*
+ *@media (max-width:767px){ [>xs<] 
+ *    #puzzle {
+ *        ^{puzzleSize 180}
+ *    }
+ *}
+ *@media (min-width:768px){ [>sm<] 
+ *    #puzzle {
+ *        ^{puzzleSize 240}
+ *    }
+ *}
+ *@media (min-width:992px){ [>md<] 
+ *    #puzzle {
+ *        ^{puzzleSize 480}
+ *    }
+ *}
+ *@media (min-width:1200px){ [>lg<] 
+ *    #puzzle {
+ *        ^{puzzleSize 480}
+ *    }
+ *}
+ */

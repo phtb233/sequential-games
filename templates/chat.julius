@@ -1,0 +1,354 @@
+(function($){
+        var $chat, $output, $input, $button, src, $newMessage, sendMessage,
+        isLoggedIn, initChat, initLogin, $username, $login, $message,
+        myId, oppId, oppName, myName, $globe, searchForOpponents, 
+        onAddedToLobby, searchTimer, addMessage,
+        $playerDetails, $opponentDetails, instructions, quitMultiplayer,
+        startSearchHandler, quitMultiplayerHandler, cancelSearch, colours,
+        myColour, oppColour, assignColours, trackDisconnect, createSource,
+        resetScores;
+        
+
+        $chat     = $("#" + #{toJSON chat});
+        $globe = $("#globe");
+        $output   = $("#" + #{toJSON output});
+        oppId = 0;
+        colours = ["#B32", "#2B3", "#32B", "#A73", "#BB4", "#C4A", "#444"];
+
+        initLogin = function(){
+            var checkUsername;
+            $username = $("#" + #{toJSON uname});
+            $login    = $("#" + #{toJSON login});
+            $message  = $("#" + #{toJSON message});
+            $notice   = $("#" + #{toJSON notice});
+
+            login = function(e){
+                if(validUsername()){
+                    // send username to server
+                    // change interface on successful response
+                    var username = $username.val();
+                    $.ajax({
+                            type : "POST",
+                            url  : "@{toMaster UsernameR}",
+                            data : { "username" : username 
+                                   , "game" : game },
+                            success : success,
+                            error   : error
+                    });
+                    myName = username;
+                }
+                return false;
+            };
+            // Also check when 'return' is pressed.
+            $username.bind("keyup", function(e){
+                if(e.which === 13) {
+                    login(e); 
+                    return false;
+                }
+            });
+            $login.bind("click", login);
+            validUsername = function(){
+                var text = $username.val();
+                var valid = false;
+                if(text.search(/[^A-Za-z ]/) !== -1){
+                    $message.
+                      text("There are invalid characters in your username.");
+                } else if(text.length < 3 || text.length > 20){
+                    $message.
+                     text("Your username must be between 3 and 20 letters.");
+                } else {
+                    valid = true;
+                }
+                return valid;
+            };
+            success = function(data){
+                myId = data;
+                $username.remove();
+                $login.remove();
+                $message.remove();
+                $notice.remove();
+                initChat();
+            };
+            error = function(xhr,code){
+                $message.text("There was an error sending " +
+                        "your username to the server.");
+            };
+        }
+
+        initChat = function(){
+            trackDisconnect();
+            instructions = " You are currently playing the CPU."
+                         + " To play with others, click the search button.";
+
+            $input  = $("<textarea>");
+            $input.attr({ "id" : #{toJSON input}, "placeholder" : " >" });
+            $button = $("<button>");
+            $button.attr("id", #{toJSON send});
+            $button.text("Send");
+            $globe.removeAttr("disabled");
+            $globe.on("click", startSearchHandler);
+
+            assignColours(colours);
+
+            $chat.append($input);
+            $chat.append($button);
+            $playerDetails   = $("#player-1-info");
+            $opponentDetails = $("#player-2-info");
+            $playerDetails.children(".name").text(myName);
+
+            addMessage("Welcome, " + myName + "." + instructions)
+            // Send this player's move to the server so it can be broadcast
+            // to the other player.
+            $(document).on("sendMove", function(e, move){
+                $.ajax({
+                        type : "POST"
+                        , data : { "id"   : myId
+                                 , "move" : move 
+                                 , "game" : game }
+                        , url  : "@{toMaster TakeTurnR}"
+                        , success : function(data){ 
+                            console.log(myId +
+                                    " successfully sent their move.");
+                        }
+                        , error : function(a,code){ 
+                            addError("There was a problem while sending" +
+                                    " your move to the server.");
+                            quitMultiplayer();
+                            addMessage("You are now playing the CPU");
+                        }
+                });
+            });
+
+            $input.on("keypress", function(e){
+                // If return is pressed...
+                if(e.which === 13){
+                    sendMessage();
+                    return false;
+                }
+            });
+
+            $button.on("click", function(e){
+                sendMessage();
+                return false;
+            });
+
+            sendMessage = function(){
+                var message = $input.val();
+                $input.val("");
+                // Add message to our own window.
+                addMessage(myName + " : " + message, myColour);
+                if(!multiplayer){
+                    addMessage("You're talking to yourself");
+                } else {
+                    $.ajax({
+                            type: "POST",
+                            data: { "message"  : message
+                                , "from"     : myName
+                                , "to"       : oppId },
+                            url : "@{toMaster SendR}",
+                            success : function(data){
+                                console.log("message was successfully sent.");
+                            },
+                            error : function(data, code){
+                                addError("There was a problem sending" + 
+                                " your message to the server.\n" +
+                                "Code : " + code);
+                            }
+                    });
+                }
+            };
+            onAddedToLobby = function(){
+                var secs = 2;
+                console.log("searching for opponents every " + secs 
+                    + " seconds...");
+                searchTimer = setInterval(searchForOpponents, secs * 1000);
+                searchTimeout = setTimeout(cancelSearch, 7 * 1000);
+            };
+            // Perform search continuously.
+            searchForOpponents = function(){
+                console.log("searching now...");
+                $.ajax({
+                          type: "POST"
+                        , url : "@{toMaster SearchR}"
+                        , data : { id   : myId 
+                                 , name : myName 
+                                 , "game" : game }
+                        , error   : function(data, code){
+                            addError("There was a problem while searching " +
+                                    "for opponents.\nCode : " + code);
+                        }
+                });
+            };
+        };
+
+        quitMultiplayer = function(){
+            if(src) src.close(); src = null;
+            console.log (myId + " successfully ended the game.");
+            multiplayer = false;
+            reset(X);
+            oppId = null;
+            oppName = null;
+            $opponentDetails.children(".name").text("CPU");
+            resetScores();
+            $globe.text("Search");
+            $globe.on("click", startSearchHandler);
+        };
+
+        addMessage = function(message, colour = #{toJSON messageColor}){
+            $newMessage = $("<p>");
+            $newMessage.attr("style", "color : " + colour);
+            $newMessage.text(message);
+            $output.append($newMessage);
+            $output.scrollTop($output.get(0).scrollHeight);
+        };
+
+        addError = function(message){
+            addMessage(message, "#F44");
+        };
+
+        startSearchHandler = function(e){
+            if(!src) src = createSource();
+            // Start searching for opponents.
+            addMessage("Searching for opponents...");
+            $globe.off("click");
+            $globe.text("Searching");
+            $globe.attr("disabled", "");
+            // First get added to lobby.
+            $.ajax({
+                    type : "POST"
+                  , data : { id : myId
+                            , name : myName
+                            , "game" : game } 
+                  , url  : "@{toMaster LobbyR}"
+                  , success : onAddedToLobby
+                  , error : function(xhr, code){
+                        addError("Failed to join the lobby.");
+                        quitMultiplayer();
+                        addMessage("You are now playing the CPU");
+                    }
+            });
+        };
+
+        quitMultiplayerHandler = function(e){
+            $globe.off("click");
+            // close connection.
+            $.ajax({
+                    type : "POST"
+                  , data : { "id" : myId, "name" : myName 
+                           , "game" : game }
+                  , url  : "@{toMaster CloseR}"
+                  , error : function(a,code){ 
+                      addError("There was a problem closing the match.");
+                      quitMultiplayer();
+                      addMessage("You are now playing the CPU");
+                  }
+            });
+            return false;
+        };
+
+        cancelSearch = function(){
+            addMessage("No opponents were found. Stopping search.");
+            clearInterval(searchTimer);
+            clearTimeout(searchTimeout);
+            $globe.text("Search");
+            $globe.removeAttr("disabled");
+            $globe.on("click", startSearchHandler);
+            $.ajax({
+                    type : "POST"
+                  , data : { "id" : myId
+                           , "name" : myName 
+                           , "game" : game }
+                  , url  : "@{toMaster StopSearchR}"
+                  , error : function(a,code){ 
+                                addError("Failed to exit lobby"); 
+                                quitMultiplayer();
+                                addMessage("You are now playing the CPU");
+                            }
+            });
+        };
+
+        assignColours = function(c){
+            var index = Math.round(Math.random() * (c.length - 1));
+            myColour = c[index];
+            c.splice(index, 1);
+            index = Math.round(Math.random() * (c.length - 1));
+            oppColour = c[index];
+        };
+
+        trackDisconnect = function(){
+            $.ajax({
+                    type : "POST"
+                  , url  : "@{toMaster TrackR}"
+                  , data : { id : myId , name : myName, "game" : game }
+            });
+        };
+
+        createSource = function(){
+            var src;
+            src = new EventSource("@{toMaster ReceiveR}");
+            // on error
+            src.addEventListener(myId + "error", function(e){
+                addError(e.data);
+                quitMultiplayer();
+                addMessage("You are now playing the CPU");
+            }, false);
+            // on message
+            src.addEventListener(myId + "message", function(e){
+                addMessage(e.data, oppColour);
+            }, false);
+            // on match
+            src.addEventListener(myId + "match", function(e){
+                try {
+                    var data = JSON.parse (e.data);
+                } catch (_) {
+                    console.log("There was an error.\n" +
+                                "data: " + e.data);
+                }
+                oppId = data.oppId;
+                oppName = data.oppName;
+                resetScores();
+                $opponentDetails.children(".name").text(oppName);
+                addMessage("You are now playing with " + oppName);
+                // Stop searching for opponents.
+                clearInterval(searchTimer);
+                clearTimeout(searchTimeout);
+                // Switch to multiplayer mode.
+                multiplayer = true;
+                // Provide option to end match.
+                $globe.text("Close");
+                $globe.removeAttr("disabled");
+                $globe.on("click", quitMultiplayerHandler);
+                if(data.player === X){ // If we're the first player...
+                    // let us start first.
+                    console.log("I start first");
+                    reset(X);
+                } else if (data.player === O){
+                    console.log("I go second");
+                    reset(O);
+                } else {
+                    console.log("unrecognized sse message");
+                    console.log(e.data);
+                }
+            }, false);
+            // on opponent's move
+            src.addEventListener(myId + "move", function(e){
+                addMessage(oppName + " takes their turn");
+                takeTurn(O, parseInt(e.data));
+            },false);
+            // on server's request to close connection
+            src.addEventListener(myId + "close", function(e){
+                quitMultiplayer();
+                addMessage(e.data);
+                addMessage("You are now playing the CPU");
+            },false);
+            return src;
+        };
+        resetScores = function(){
+            $opponentDetails.children(".score").text(0);
+            $playerDetails.children(".score").text(0);
+            opponentScore = playerScore = 0;
+        }
+
+        initLogin();
+
+})(jQuery);

@@ -1,0 +1,48 @@
+<h1.jumbotron>Modelling Sequential Games using the Selection Monad
+<div .row>
+    <h2>Description
+    <div .col-xs-12>
+        <p>
+            <h4>The Selection Monad:
+            <code #selection-monad>
+                type J r x = (x -> r) -> x
+        <p>
+            This site hosts a series of prototypes demonstrating the selection
+            monad's ability to solve sequential games, while exhibiting the
+            feasibility of relying on this algorithm discover optimal moves in
+            real-time in order to provide an "AI" for online competition.
+            This computation provides a generic interface for
+            information-complete, turn-based games and singleplayer puzzles,
+            given that the user specifies three features about that particular
+            game:
+            <ul>
+                <li>A pool of all the possible moves that can be chosen by #
+                    \either player
+                <li>A predicate that articulates the win conditions
+                <li>The maximum number of turns that can occur during play
+        <p>
+            While this requirement implies that a great number of games can
+            be modelled, the user must know all the moves that can be chosen
+            at any time: this rules out games such as Nim (matchsticks), which
+            offers players the option to remove a varied number of matches
+            only restricted by those available. The river crossing game
+            is another example which cannot be modelled; the maximum number
+            of turns is undetermined.
+<div .row>
+    <h2>Implementation
+    <div .col-xs-12>
+        <p>
+            The original works that produced this computation provided it in
+            Haskell, leveraging it's lazy evaluation and infinite lists to
+            define complicated structures founded in mathematics. Further
+            examination has revealed that the algorithm supports parallel
+            computations of multiple possible outcomes (another facility
+            greatly simplified by Haskell). Communication between the site and
+            the game logic is handled by Yesod.
+        <p>
+            Additionally, the competitive games are accompanied with an online
+            multiplayer/chat option, if the AI proves disatisfactory.
+<div .row-fluid>
+    <footer>
+        <p>Copyright &copy; 2016 Stephen Oppong Beduh
+

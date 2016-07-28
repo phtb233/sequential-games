@@ -1,0 +1,12 @@
+/static StaticR Static appStatic
+/auth   AuthR   Auth   getAuth
+/chat   ChatR   Chat   getChat
+
+/favicon.ico FaviconR GET
+/robots.txt RobotsR GET
+
+/ HomeR GET
+
+/tictactoe TicTacToeR GET POST
+/sudoku    SudokuR    GET 
+/connect3  Connect3R  GET POST

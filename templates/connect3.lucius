@@ -1,0 +1,61 @@
+#puzzle-main {
+    width: 80%;
+    height: 100%;
+}
+
+#puzzle .cell {
+    width: 33.3%;
+    height: 100%;
+    float: left;
+    padding: 1em;
+    background-color: transparent;
+}
+
+.hole {
+    width: 100%;
+    height: 100%;
+    border-radius: 90%;
+    background-color: #EEE;
+    box-sizing: content-box;
+}
+
+.piece.X { background-color: #eb5757 !important; }
+
+.piece.O { background-color: #ffeb3b !important; }
+
+.tick-container {
+    position: absolute;
+    height: 20px;
+    width: 23px;
+}
+
+.tick {
+    background-image: url('@{StaticR img_ticks_png}');
+    background-size: cover;
+    max-width: 100%;
+    max-height: 87%;
+    background-color: transparent;
+    /*position: absolute;*/
+}
+
+.tick.O { background-position: 100%; }
+
+.puzzle-row {
+    height: 33.3%;
+    width: 100%;
+    background-color: transparent;
+}
+
+.cell:first-child { border-left: #{ borderStyle } }
+.cell:last-child { border-right: #{ borderStyle } }
+
+.puzzle-row:first-child {
+    /*border-top: 1px solid black;*/
+}
+
+.puzzle-row:last-child { border-bottom: #{ borderStyle } }
+
+.piece {
+    position: absolute;
+    ^{transition "top 0.5s ease-in"}
+}

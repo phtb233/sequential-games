@@ -1,0 +1,111 @@
+##{chat} {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    float: right;
+    width: 20%;
+    border: none;
+    border-left: 1px solid #999;
+    p, input, textarea { font-size: 1.1em; }
+}
+
+##{input} {
+    position: absolute;
+    bottom: 0px;
+    width: 80%;
+    height: 8%;
+    border: none;
+    border-top: 1px solid #999;
+    resize: none;
+    font-size: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+##{send} {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 20%;
+    height: 8%;
+    background-color: #6D4;
+    color: #FFF;
+    border: none;
+    overflow: hidden;
+}
+
+##{send}:hover {
+    background-color: #4B2;
+}
+
+##{input}:focus, ##{send}:focus, ##{login}:focus, ##{uname}:focus {
+    outline: none;
+}
+
+##{output} {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    height: 92%;
+    width: 100%;
+    font-family: monospace;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    color: #AAA;
+    p {
+        margin-top: 1em;
+    }
+}
+
+##{uname}{
+    display: block;
+    margin: 2em auto 0;
+    text-align: center;
+    border: none;
+    border-bottom: 1px dashed #CCC; 
+}
+##{login} {
+    background-color: transparent;
+    border: 1px solid #CCC;
+    display: block;
+    margin: 2em auto 0;
+    color: #{ messageColor };
+}
+##{login}:hover {
+    background-color: #{ messageColor };
+    color: white;
+}
+
+##{message} {
+    color: #C22;
+    font-style: italic;
+}
+
+         /******     MEDIA QUERIES      ******/
+
+@media (max-width:767px){ /*xs*/ 
+    ##{chat}, #globe {
+        visibility: hidden;
+    }
+    #puzzle-main {
+        width: 100%;
+    }
+}
+@media (min-width:768px){ /*sm*/ 
+    ##{chat}, #globe {
+        visibility: hidden;
+    }
+    #puzzle-main {
+        width: 100%;
+    }
+}
+@media (min-width:992px){ /*md*/ 
+    ##{chat}, #globe {
+        visibility: visible;
+    }
+    #puzzle-main {
+        width: 80%;
+    }
+}
+@media (min-width:1200px){ /*lg*/ 
+}
