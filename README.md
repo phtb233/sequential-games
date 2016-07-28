@@ -20,7 +20,7 @@ While this requirement implies that a great number of games can be modelled, the
 of turns is undetermined.
 
 ###Implementation
-The original works that produced this computation provided it in Haskell, leveraging it's lazy evaluation and infinite lists to define complicated structures founded in mathematics. Further examination has revealed that the algorithm supports parallel computations of multiple possible outcomes (another facility greatly simplified by Haskell). Communication between the site and the game logic is handled by Yesod.
+The original works that produced this computation provided it in Haskell, leveraging it's laziness and infinite lists to define complicated structures and benefit from partial evaluation. Further experimentation has revealed that the algorithm supports the parallel computation of all possible, optimal outcomes (another facility greatly simplified by Haskell). Communication between the site and the game logic is handled by Yesod, a web framework written in said language.
 
-Additionally, the competitive games are accompanied with an online multiplayer/chat option, if the AI proves disatisfactory.
+Additionally, the competitive games are accompanied with an online multiplayer/chat option, should the AI prove disatisfactory.
 
