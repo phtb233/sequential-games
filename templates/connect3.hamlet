@@ -1,11 +1,5 @@
 <div #puzzle-main>
-    <div #nav-bar>
-        <div>
-            <span>
-                <a href=@{TicTacToeR}>Tic-Tac-Toe
-        <div>
-            <span>
-                <a href=@{Connect3R}>Connect 3
+    ^{navbar}
     <div .player-info #player-1-info>
         <h1 .name>Player
         <h1 .score>0

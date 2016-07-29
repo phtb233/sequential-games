@@ -18,6 +18,7 @@ import Control.Monad.Logger                 (liftLoc, runLoggingT)
 import Database.Persist.Sqlite              (createSqlitePool, runSqlPool,
                                              sqlDatabase, sqlPoolSize)
 import Import
+import Text.Read(read)
 import Language.Haskell.TH.Syntax           (qLocation)
 import Network.Wai (Middleware)
 import Network.Wai.Handler.Warp             (Settings, defaultSettings,
@@ -40,6 +41,7 @@ import Handler.TicTacToe
 import Handler.Connect3
 import Handler.Sudoku
 import Handler.Common
+import Handler.GetSudokuPuzzle
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -66,6 +68,14 @@ makeFoundation appSettings = do
     getConnect3Lobby  <- MV.newMVar []
     getTicTacToeMatches <- MV.newMVar Map.empty
     getConnect3Matches  <- MV.newMVar Map.empty
+    puzzleText <- lines <$> 
+                        readFile "static/etc/sudoku-puzzles.txt" :: IO [String]
+    let parsePuzzle [] = []
+        parsePuzzle ('.':xs) = Nothing : parsePuzzle xs
+        parsePuzzle (n:xs) = Just (read [n] :: Int) : parsePuzzle xs
+    getPuzzles <- return $ Import.map parsePuzzle puzzleText
+
+
 
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a

@@ -7,7 +7,7 @@
     width: 20%;
     border: none;
     border-left: 1px solid #999;
-    p, input, textarea { font-size: 1.1em; }
+    p, input, textarea { font-size: 0.7em; }
 }
 
 ##{input} {
@@ -18,7 +18,7 @@
     border: none;
     border-top: 1px solid #999;
     resize: none;
-    font-size: 1em;
+    font-size: 0.7em;
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
@@ -53,7 +53,7 @@
     overflow-y: scroll;
     color: #AAA;
     p {
-        margin-top: 1em;
+        margin-top: 0.7em;
     }
 }
 
@@ -69,6 +69,7 @@
     border: 1px solid #CCC;
     display: block;
     margin: 2em auto 0;
+    font-size: 0.7em;
     color: #{ messageColor };
 }
 ##{login}:hover {
@@ -79,6 +80,9 @@
 ##{message} {
     color: #C22;
     font-style: italic;
+}
+#globe {
+    font-size: 0.7em;
 }
 
          /******     MEDIA QUERIES      ******/

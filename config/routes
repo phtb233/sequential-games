@@ -7,6 +7,7 @@
 
 / HomeR GET
 
-/tictactoe TicTacToeR GET POST
-/sudoku    SudokuR    GET 
-/connect3  Connect3R  GET POST
+/tictactoe         TicTacToeR   GET POST
+/sudoku            SudokuR      GET POST
+/get-sudoku-puzzle GetSudokuPuzzleR POST
+/connect3          Connect3R    GET POST

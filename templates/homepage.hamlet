@@ -1,3 +1,14 @@
+<nav .navbar .navbar-default>
+    <div .container-fluid>
+        <!--<div .navbar-header>-->
+        <div #navbar .collapse .navbar-collapse>
+            <ul .nav .navbar-nav>
+                <li>
+                    <a href=@{TicTacToeR}>TicTacToe
+                <li>
+                    <a href=@{Connect3R}>Connect 3
+                <li>
+                    <a href=@{SudokuR}>Sudoku
 <h1.jumbotron>Modelling Sequential Games using the Selection Monad
 <div .row>
     <h2>Description
@@ -8,15 +19,15 @@
                 type J r x = (x -> r) -> x
         <p>
             This site hosts a series of prototypes demonstrating the selection
-            monad's ability to solve sequential games, while exhibiting the
-            feasibility of relying on this algorithm discover optimal moves in
-            real-time in order to provide an "AI" for online competition.
-            This computation provides a generic interface for
-            information-complete, turn-based games and singleplayer puzzles,
-            given that the user specifies three features about that particular
-            game:
+            monad's ability to solve sequential games while exhibiting the
+            feasibility of relying on this algorithm to determine optimal moves
+            in real-time. This data is fashioned as an AI controlled opponent
+            the player can play against. The computation provides a generic
+            interface for defining information-complete, turn-based games and
+            singleplayer puzzles, requiring that the user specify three
+            features about that particular game:
             <ul>
-                <li>A pool of all the possible moves that can be chosen by #
+                <li>The pool of all the possible moves that can be chosen by #
                     \either player
                 <li>A predicate that articulates the win conditions
                 <li>The maximum number of turns that can occur during play
@@ -27,22 +38,34 @@
             offers players the option to remove a varied number of matches
             only restricted by those available. The river crossing game
             is another example which cannot be modelled; the maximum number
-            of turns is undetermined.
+            of turns is not fixed.
+        <p>
+            The complexity of the puzzle (the number of moves available, the
+            number of turns and the computational time of determining victory)
+            affect the algorithm's completion time exponentially; thus, only
+            simplified puzzles are demonstrated here. If the server takes too
+            long to offer an optimal move, one is chosen at random.
 <div .row>
     <h2>Implementation
     <div .col-xs-12>
         <p>
             The original works that produced this computation provided it in
-            Haskell, leveraging it's lazy evaluation and infinite lists to
-            define complicated structures founded in mathematics. Further
-            examination has revealed that the algorithm supports parallel
-            computations of multiple possible outcomes (another facility
-            greatly simplified by Haskell). Communication between the site and
-            the game logic is handled by Yesod.
+            Haskell, utilizing it's laziness and infinite lists to
+            define structures that benefit from partial evaluation.
+            Further examination has revealed that the algorithm supports
+            parallel computations of multiple possible outcomes
+            (another facility greatly simplified by Haskell). #
+             Communication between the site and the game logic is handled by
+             Yesod (a web framework also written in Haskell).
         <p>
             Additionally, the competitive games are accompanied with an online
             multiplayer/chat option, if the AI proves disatisfactory.
-<div .row-fluid>
-    <footer>
-        <p>Copyright &copy; 2016 Stephen Oppong Beduh
+        <p>
+            The logic for the #
+            <a href=https://github.com/phtb233/solvable-games>games, the monad
+            , and #
+            <a href=https://github.com/phtb233/sequential-games>this site
+            \ are available on Github.
+<footer .sticky-footer>
+    <p>Copyright &copy; 2016 Stephen Oppong Beduh
 

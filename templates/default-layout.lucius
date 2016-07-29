@@ -3,40 +3,18 @@
     top: 2%;
     width: 100%;
     /*font-family: 'Lobster';*/
-    font-size: 2em;
+    font-size: 0.7em;
     color: #888;
     div {
         float: left;
-        width: 50%;
+        width: 33.3%;
         span {
             display: block;
             text-align: center;
         }
     }
 }
-/*http://stackoverflow.com/questions/12121090/responsively-change-div-size-keeping-aspect-ratio*/
-/*#puzzle-wrapper {*/
-    /*width: 40%;*/
-    /*left: 60%;*/
-    /*top: 60%;*/
-    /*margin-top: -25%;*/
-    /*margin-left: -25%;*/
-    /*display: inline-block;*/
-    /*position: relative;*/
-/*}*/
-/*#puzzle-wrapper:after {*/
-    /*padding-top: 100%;*/
-    /*display: block;*/
-    /*content: '';*/
-/*}*/
-/*#puzzle {*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*bottom: 0;*/
-    /*right: 0;*/
-    /*left: 0;*/
-    /*^{puzzleSize 23}*/
-/*}*/
+
 #puzzle-wrapper {
     position: absolute;
     ^{puzzleSize 18}
@@ -58,7 +36,7 @@
 .player-info {
     position: absolute;
     text-align: center;
-    h1 { font-size: 3em; }
+    h1 { font-size: 1.2em; }
 }
 
 #player-1-info { left: 5%; }
@@ -150,11 +128,11 @@
     .player-info { 
         top: 20%; 
     }
-    body {font-size: medium;}
+    body {font-size: x-large;}
 }
 @media (min-width:1200px){ /*lg*/ 
     .player-info { 
         top: 20%; 
     }
-    body {font-size: medium;}
+    body {font-size: x-large;}
 }

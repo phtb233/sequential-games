@@ -1,16 +1,10 @@
 <div #puzzle-main>
-    <div #nav-bar>
-        <div>
-            <span>
-                <a href=@{TicTacToeR}>Tic-Tac-Toe
-        <div>
-            <span>
-                <a href=@{Connect3R}>Connect 3
+    ^{navbar}
     <div .player-info #player-1-info>
-        <h3 .name>Player
+        <h1 .name>Player
         <h1 .score>0
     <div .player-info #player-2-info>
-        <h3 .name>CPU
+        <h1 .name>CPU
         <h1 .score>0
     <button #globe disabled>Search
     <div #puzzle-wrapper>

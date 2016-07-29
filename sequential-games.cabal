@@ -32,9 +32,11 @@ library
                      Handler.Sudoku
                      Handler.Connect3
                      Handler.Helper
+                     Handler.GetSudokuPuzzle
                      Logic.TicTacToe
                      Logic.GameLogic
                      Logic.Connect3
+                     Logic.Sudoku
                      Chat.Data
                      Chat.Chat
 

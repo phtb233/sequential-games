@@ -34,6 +34,7 @@ data App = App
     , getTicTacToeMatches     :: MVar (Map Text (Text,Text))
     , getConnect3Lobby        :: MVar [(Text,Text)]
     , getConnect3Matches      :: MVar (Map Text (Text,Text))
+    , getPuzzles :: [[Maybe Int]]
     }
 
 -- This is where we define all of the routes in our application. For a full
@@ -132,6 +133,20 @@ instance Yesod App where
             || level == LevelError
 
     makeLogger = return . appLogger
+
+navbar :: Widget
+navbar = [whamlet|
+            <div #nav-bar>
+                <div>
+                    <span>
+                        <a href=@{TicTacToeR}>Tic-Tac-Toe
+                <div>
+                    <span>
+                        <a href=@{Connect3R}>Connect 3
+                <div>
+                    <span>
+                        <a href=@{SudokuR}>Sudoku
+        |]
 
 -- How to run database actions.
 instance YesodPersist App where
