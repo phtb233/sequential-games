@@ -173,7 +173,7 @@
             return;
         }
         if(moves.length >= 9){
-            showMessageBox("draw");
+            showMessageBox("draw", player);
         } else {
             turnSwitch(op);
         }

@@ -30,4 +30,5 @@ chatWidget toMaster = do
         {-ili <- handlerToWidget isLoggedIn -}
         {-let ili = False-}
         let messageColor = "#AAA" :: Text
+            fontSize     = "0.9em"  :: Text
         $(widgetFile "chat")

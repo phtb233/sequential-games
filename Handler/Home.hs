@@ -15,5 +15,5 @@ import Import
 getHomeR :: Handler Html
 getHomeR = do
     defaultLayout $ do
-        setTitle "Welcome To Yesod!"
+        setTitle "Sequential Games"
         $(widgetFile "homepage")

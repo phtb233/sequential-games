@@ -38,3 +38,16 @@ html {
     width: 100%;
     padding-top: 30px;
 }
+
+@media (min-width:992px){ /*md*/ 
+    .player-info { 
+        top: 20%; 
+    }
+    body {font-size: medium;}
+}
+@media (min-width:1200px){ /*lg*/ 
+    .player-info { 
+        top: 20%; 
+    }
+    body {font-size: medium;}
+}

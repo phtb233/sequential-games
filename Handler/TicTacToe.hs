@@ -10,6 +10,7 @@ getTicTacToeR :: Handler Html
 getTicTacToeR = do
         changeId
         defaultLayout $ do 
+            setTitle "TicTacToe"
             $(widgetFile "tictactoe")
             chatWidget ChatR
         

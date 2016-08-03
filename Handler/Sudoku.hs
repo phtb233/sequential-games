@@ -4,6 +4,7 @@ import Logic.Sudoku (getSolution)
 
 getSudokuR :: Handler Html
 getSudokuR = defaultLayout $ do
+    setTitle "Sudoku"
     $(widgetFile "sudoku")
 
 postSudokuR :: Handler Value

@@ -1,7 +1,7 @@
 <nav .navbar .navbar-default>
-    <div .container-fluid>
+    <div .container>
         <!--<div .navbar-header>-->
-        <div #navbar .collapse .navbar-collapse>
+        <div #navbar>
             <ul .nav .navbar-nav>
                 <li>
                     <a href=@{TicTacToeR}>TicTacToe

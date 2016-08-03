@@ -3,7 +3,7 @@
     top: 2%;
     width: 100%;
     /*font-family: 'Lobster';*/
-    font-size: 0.7em;
+    font-size: 1.2em;
     color: #888;
     div {
         float: left;
@@ -18,6 +18,10 @@
 #puzzle-wrapper {
     position: absolute;
     ^{puzzleSize 18}
+}
+
+.nav > li {
+    float: left;
 }
 
 #puzzle {
@@ -36,7 +40,7 @@
 .player-info {
     position: absolute;
     text-align: center;
-    h1 { font-size: 1.2em; }
+    h1 { font-size: 1.5em; }
 }
 
 #player-1-info { left: 5%; }
@@ -128,11 +132,11 @@
     .player-info { 
         top: 20%; 
     }
-    body {font-size: x-large;}
+    body {font-size: large;}
 }
 @media (min-width:1200px){ /*lg*/ 
     .player-info { 
         top: 20%; 
     }
-    body {font-size: x-large;}
+    body {font-size: large;}
 }

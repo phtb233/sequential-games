@@ -9,6 +9,7 @@ getConnect3R :: Handler Html
 getConnect3R = do
         changeId
         defaultLayout $ do
+            setTitle "Connect 3"
             $(widgetFile "connect3")
             chatWidget ChatR
 
