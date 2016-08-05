@@ -33,9 +33,11 @@ library
                      Handler.Connect3
                      Handler.Helper
                      Handler.GetSudokuPuzzle
+                     Handler.NQueens
                      Logic.TicTacToe
                      Logic.GameLogic
                      Logic.Connect3
+                     Logic.NQueens
                      Logic.Sudoku
                      Chat.Data
                      Chat.Chat

@@ -2,7 +2,7 @@
 {-# LANGUAGE QuasiQuotes, RankNTypes, TemplateHaskell, TypeFamilies #-}
 module Chat.Data where
 
-import Blaze.ByteString.Builder.Char.Utf8 (fromText, fromString)
+import Blaze.ByteString.Builder.Char.Utf8 (fromText, fromString, fromShow)
 import Blaze.ByteString.Builder (fromByteString, Builder)
 import Control.Concurrent.Chan
 import Network.Wai.EventSource 
@@ -45,6 +45,8 @@ class (Yesod master, RenderMessage master FormMessage)
         getCurrentOpponent    :: Text -> Text
                                  -> HandlerT master IO (Maybe (Text,Text))
         quitMatch             :: Text -> Text -> Text -> HandlerT master IO ()
+        getLobbyCount         :: Text -> HandlerT master IO Int
+        getMatchCount         :: Text -> HandlerT master IO Int
 
 type ChatHandler a = forall master. YesodChat master =>
                         HandlerT Chat (HandlerT master IO) a
@@ -80,6 +82,8 @@ postUsernameR = do
         lift $ setCurrentGame game
         return pid
 
+-- Add a player to the lobby. Those in the lobby can be matched with each
+-- other to start a competitive match.
 postLobbyR :: ChatHandler ()
 postLobbyR = do
         name <- lift $ runInputPost $ ireq textField "name"
@@ -89,6 +93,8 @@ postLobbyR = do
         {-lift $ addToLobby-}
         -- Because reading from session on same computer causes problems
         lift $ testAddToLobby pid name game
+        -- Send event updating the number of people in lobby.
+        sendGameStatus game
 
 -- Set up a match between a pair of players, and send each of them an sse.
 -- The sse specifies whether they go first (player X) or not (player O).
@@ -102,8 +108,7 @@ postSearchR = do
         {-name <- lift getUserName-}
         {-maybeOpp <- lift searchForOpponent-}
         maybeOpp <- lift $ testSearchForOpponent pid name game
-        -- Get opponent id, send a sse to them and this player.
-        -- Dont use Ajax response, as that can only be sent to one player.
+        -- Get opponent id, send an sse to them and this player.
         case maybeOpp of
             Just (oppId,oppName) -> do
                 sendEvent pid  "match" $ jsonBuilder [("player", "X")
@@ -113,6 +118,7 @@ postSearchR = do
                                                      ,("oppId", pid)
                                                      ,("oppName", name)]
             Nothing -> return ()
+        sendGameStatus game
 
 postTakeTurnR :: ChatHandler ()
 postTakeTurnR = do
@@ -133,9 +139,11 @@ postCloseR :: ChatHandler ()
 postCloseR = do
         pid <- lift $ runInputPost $ ireq textField "id"
         game <- lift $ runInputPost $ ireq textField "game"
+        -- Check if the opponent quit or disconnected.
         maybeOppId <- lift $ getCurrentOpponent pid game
         liftIO $ putStrLn "opponent: "   
         liftIO $ print maybeOppId
+        -- If they quit, alert them both, otherwise alert connected player.
         case maybeOppId of
             Just (oppId, oppName) -> do
                 lift $ quitMatch pid oppId game
@@ -144,12 +152,16 @@ postCloseR = do
                                             oppName ++ " quit the game"]
                 liftIO $ putStrLn "Players have been sent sse to close"
             _ -> sendEvent pid "close" [fromString "Your opponent left"]
+        sendGameStatus game
  
+-- No opponents were found during the searching interval.
+-- Stop the search and remove the player from the lobby.
 postStopSearchR :: ChatHandler ()
 postStopSearchR = do
         pid <- lift $ runInputPost $ ireq textField "id"
         game <- lift $ runInputPost $ ireq textField "game"
         lift $ testRemoveFromLobby pid game
+        sendGameStatus game
 
 -- Taken from Michael Snoyman, Google Groups:
 -- https://groups.google.com/forum/#!topic/yesodweb/UFZaplhoTU0
@@ -161,13 +173,14 @@ postTrackR = do
         name <- lift $ runInputPost $ ireq textField "name"
         game <- lift $ runInputPost $ ireq textField "game"
         runInnerHandlerMaybe <- lift handlerToIO
+        runInnerHandlerInt <- lift handlerToIO
         runInnerHandler <- lift handlerToIO
         runOuterHandler <- handlerToIO
         lift $ repEventSource $ \_ -> bracketP
-            (do
+            (do -- Initial setup 
                 putStrLn "received connection"
             )
-            (\_ -> do 
+            (\_ -> do  -- Cleanup 
                 putStrLn $ "connection terminated"
                 maybeOpp <- runInnerHandlerMaybe $ getCurrentOpponent pid game
                 -- Remove player from lobby.
@@ -180,8 +193,14 @@ postTrackR = do
                                       [fromText $ name
                                          ++ " has disconnected"]
                   _ -> putStrLn "Couldn't find the opponent"
+                lobbyCount <- runInnerHandlerInt $ getLobbyCount game
+                matchCount <- runInnerHandlerInt $ getMatchCount game
+                runOuterHandler $ 
+                        sendEvent' "" "lobbyCount" [fromShow lobbyCount]
+                runOuterHandler $ 
+                        sendEvent' "" "matchCount" [fromShow matchCount]
             )
-            $ \_ -> forever $ do
+            $ \_ -> forever $ do -- Ping to check the connection 
                 liftIO $ do
                     putStrLn "delaying"
                     threadDelay 5000000
@@ -202,6 +221,13 @@ sendEvent toId suffix message = do
     liftIO $ writeChan chan $ ServerEvent (Just (fromText $ toId ++ suffix))
                                 Nothing
                                 message
+
+sendGameStatus :: Text -> ChatHandler ()
+sendGameStatus game = do
+        lobbyCount <- lift $ getLobbyCount game
+        matchCount <- lift $ getMatchCount game
+        sendEvent "" "lobbyCount" [fromShow lobbyCount]
+        sendEvent "" "matchCount" [fromShow matchCount]
 
 jsonBuilder :: [(Text, Text)] -> [Builder]
 jsonBuilder    [] = []

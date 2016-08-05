@@ -139,6 +139,9 @@ navbar = [whamlet|
             <div #nav-bar>
                 <div>
                     <span>
+                        <a href=@{HomeR}>Home
+                <div>
+                    <span>
                         <a href=@{TicTacToeR}>Tic-Tac-Toe
                 <div>
                     <span>
@@ -146,6 +149,9 @@ navbar = [whamlet|
                 <div>
                     <span>
                         <a href=@{SudokuR}>Sudoku
+                <div>
+                    <span>
+                        <a href=@{NQueensR}>N-Queens
         |]
 
 -- How to run database actions.
@@ -290,6 +296,16 @@ instance YesodChat App where
             liftIO $ putMVar lobby newLobby
             liftIO $ putStrLn "Current lobby:"
             liftIO $ print newLobby
+        getLobbyCount game = do
+            let getLobby = whichLobby game
+            lobby <- getLobby <$> getYesod
+            ls <- liftIO $ readMVar lobby
+            return $ length ls
+        getMatchCount game = do
+            let getMatches = whichMatches game
+            matches <- getMatches <$> getYesod
+            ms <- liftIO $ readMVar matches
+            return $ (length ms) `div` 2
 
 changeId :: Handler ()
 changeId = do

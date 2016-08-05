@@ -6,6 +6,11 @@
     <div .player-info #player-2-info>
         <h1 .name>CPU
         <h1 .score>0
+    <div #connect>
+        <p #matches>Players playing: #
+            <span>n/a
+        <p #lobby>Players searching: #
+            <span>n/a
     <button #globe disabled>Search
     <div #puzzle-wrapper>
         <div #puzzle>

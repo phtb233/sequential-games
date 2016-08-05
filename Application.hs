@@ -41,6 +41,7 @@ import Handler.TicTacToe
 import Handler.Connect3
 import Handler.Sudoku
 import Handler.Common
+import Handler.NQueens
 import Handler.GetSudokuPuzzle
 
 -- This line actually creates our YesodDispatch instance. It is the second half

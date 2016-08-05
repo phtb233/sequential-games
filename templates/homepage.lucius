@@ -30,6 +30,11 @@ html {
     margin-bottom: 180px;
 }
 
+.nav > li {
+    /*font-size: 1.2em;*/
+    float: left;
+}
+
 .sticky-footer {
     position: absolute;
     bottom: 0;
@@ -39,15 +44,9 @@ html {
     padding-top: 30px;
 }
 
-@media (min-width:992px){ /*md*/ 
-    .player-info { 
-        top: 20%; 
-    }
-    body {font-size: medium;}
+@media (max-width:767px){ /*xs*/ 
+    .nav > li { font-size: 12px; }
 }
-@media (min-width:1200px){ /*lg*/ 
-    .player-info { 
-        top: 20%; 
-    }
-    body {font-size: medium;}
+@media (min-width:768px){ /*sm*/ 
+    .nav > li { font-size: 16px; }
 }

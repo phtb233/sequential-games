@@ -88,7 +88,7 @@
          /******     MEDIA QUERIES      ******/
 
 @media (max-width:767px){ /*xs*/ 
-    ##{chat}, #globe {
+    ##{chat}, #globe, #connect {
         visibility: hidden;
     }
     #puzzle-main {
@@ -96,7 +96,7 @@
     }
 }
 @media (min-width:768px){ /*sm*/ 
-    ##{chat}, #globe {
+    ##{chat}, #globe, #connect {
         visibility: hidden;
     }
     #puzzle-main {
@@ -104,7 +104,7 @@
     }
 }
 @media (min-width:992px){ /*md*/ 
-    ##{chat}, #globe {
+    ##{chat}, #globe, #connect {
         visibility: visible;
     }
     #puzzle-main {

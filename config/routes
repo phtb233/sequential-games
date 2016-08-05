@@ -11,3 +11,4 @@
 /sudoku            SudokuR      GET POST
 /get-sudoku-puzzle GetSudokuPuzzleR POST
 /connect3          Connect3R    GET POST
+/nqueens           NQueensR     GET POST

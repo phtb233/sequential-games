@@ -7,7 +7,7 @@
     color: #888;
     div {
         float: left;
-        width: 33.3%;
+        width: 20%;
         span {
             display: block;
             text-align: center;
@@ -18,10 +18,6 @@
 #puzzle-wrapper {
     position: absolute;
     ^{puzzleSize 18}
-}
-
-.nav > li {
-    float: left;
 }
 
 #puzzle {
@@ -60,6 +56,18 @@
     position: absolute;
     top: 10%;
     right: 5%;
+}
+
+#connect {
+    position: absolute;
+    left: 5%;
+    top: 10%;
+    p {
+        text-align: center;
+        color: #AAA;
+        font-family: monospace;
+        font-size: 0.8em;
+    }
 }
 
 #cover {
