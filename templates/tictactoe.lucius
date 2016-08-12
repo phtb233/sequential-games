@@ -2,6 +2,8 @@
     width: 80%;
 }
 
+^{ adaptiveText }
+
 .puzzle-row {
     width: 100%;
     height: 33.3%;
@@ -77,3 +79,4 @@
  *    }
  *}
  */
+/*^{adaptiveText}*/

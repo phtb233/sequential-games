@@ -7,8 +7,7 @@ import Chat.Chat
 import Handler.Helper
 
 getTicTacToeR :: Handler Html
-getTicTacToeR = do
-        changeId
+getTicTacToeR =
         defaultLayout $ do 
             setTitle "TicTacToe"
             $(widgetFile "tictactoe")

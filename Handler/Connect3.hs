@@ -6,12 +6,10 @@ import Chat.Chat
 import Handler.Helper
 
 getConnect3R :: Handler Html
-getConnect3R = do
-        changeId
-        defaultLayout $ do
-            setTitle "Connect 3"
-            $(widgetFile "connect3")
-            chatWidget ChatR
+getConnect3R = defaultLayout $ do
+        setTitle "Connect 3"
+        $(widgetFile "connect3")
+        chatWidget ChatR
 
 postConnect3R :: Handler Value
 postConnect3R = do 

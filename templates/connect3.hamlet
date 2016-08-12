@@ -1,5 +1,6 @@
 <div #puzzle-main>
-    ^{navbar}
+    ^{ navbar }
+    ^{ adaptiveText }
     <div .player-info #player-1-info>
         <h1 .name>Player
         <h1 .score>0

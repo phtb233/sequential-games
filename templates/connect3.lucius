@@ -3,6 +3,8 @@
     height: 100%;
 }
 
+^{ adaptiveText }
+
 #puzzle .cell {
     width: 33.3%;
     height: 100%;
@@ -59,3 +61,4 @@
     position: absolute;
     ^{transition "top 0.5s ease-in"}
 }
+

@@ -4,6 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
+import Text.Lucius
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -154,6 +155,26 @@ navbar = [whamlet|
                         <a href=@{NQueensR}>N-Queens
         |]
 
+adaptiveText :: Widget
+adaptiveText = toWidget [lucius|
+    @media (max-width:767px){ /*xs*/ 
+        .player-info { top: 8%; }
+        body { font-size: smaller; }
+    }
+    @media (min-width:768px){ /*sm*/ 
+        .player-info { top: 8%; }
+        body { font-size: small; }
+    }
+    @media (min-width:992px){ /*md*/ 
+        .player-info { top: 20%; }
+        body {font-size: large;}
+    }
+    @media (min-width:1200px){ /*lg*/ 
+        .player-info { top: 20%; }
+        body {font-size: large;}
+    }
+|]
+
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend
@@ -231,7 +252,11 @@ instance YesodChat App where
         isLoggedIn = do
             musrname <- lookupSession "player_name" 
             return $ isJust musrname
-        setUserName newName = setSession "player_name" $ newName
+        setUserName newName = do
+            changeId
+            setSession "player_name" $ newName
+        -- Not a good idea to store which game player is playing on
+        -- serverside. Better to send from client. (unused)
         setCurrentGame newGame = setSession "player_game" $ newGame
         addToLobby = do
             pid   <- getUserId
@@ -305,7 +330,7 @@ instance YesodChat App where
             let getMatches = whichMatches game
             matches <- getMatches <$> getYesod
             ms <- liftIO $ readMVar matches
-            return $ (length ms) `div` 2
+            return $ length ms `div` 2
 
 changeId :: Handler ()
 changeId = do

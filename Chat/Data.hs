@@ -74,12 +74,11 @@ getReceiveR = do
 postUsernameR :: ChatHandler Text
 postUsernameR = do
         username <- lift $ runInputPost $ ireq textField "username"
-        game     <- lift $ runInputPost $ ireq textField "game"
+        lift $ setUserName username
         pid <- lift getUserId
         liftIO $ print username
         liftIO $ print pid
-        lift $ setUserName username
-        lift $ setCurrentGame game
+        {-lift $ setCurrentGame game-}
         return pid
 
 -- Add a player to the lobby. Those in the lobby can be matched with each
@@ -152,6 +151,7 @@ postCloseR = do
                                             oppName ++ " quit the game"]
                 liftIO $ putStrLn "Players have been sent sse to close"
             _ -> sendEvent pid "close" [fromString "Your opponent left"]
+        liftIO $ putStrLn "Sending game status"
         sendGameStatus game
  
 -- No opponents were found during the searching interval.
@@ -188,10 +188,10 @@ postTrackR = do
                 -- Remove match and notify other player of disconnection.
                 case maybeOpp of
                   Just (oppId, _) -> do
-                            runInnerHandler $ quitMatch pid oppId game
-                            runOuterHandler $ sendEvent' oppId "close"
-                                      [fromText $ name
-                                         ++ " has disconnected"]
+                        runInnerHandler $ quitMatch pid oppId game
+                        runOuterHandler $ sendEvent' oppId "close"
+                                    [fromText $ name
+                                        ++ " has disconnected"]
                   _ -> putStrLn "Couldn't find the opponent"
                 lobbyCount <- runInnerHandlerInt $ getLobbyCount game
                 matchCount <- runInnerHandlerInt $ getMatchCount game
