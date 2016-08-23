@@ -2,6 +2,12 @@
 {-# LANGUAGE QuasiQuotes, RankNTypes, TemplateHaskell, TypeFamilies #-}
 module Chat.Data where
 
+{- 
+- The client communicates with the chat application via AJAX requests,
+- which are handled by the routes defined here. 
+-
+-}
+
 import Blaze.ByteString.Builder.Char.Utf8 (fromText, fromString, fromShow)
 import Blaze.ByteString.Builder (fromByteString, Builder)
 import Control.Concurrent.Chan
@@ -27,6 +33,8 @@ mkYesodSubData "Chat" [parseRoutes|
                       /track      TrackR      POST
                       |]
 
+-- This typeclass is used to interact with the main application,
+-- particularly the game lobbies etc.
 class (Yesod master, RenderMessage master FormMessage)
         => YesodChat master where
         getUserName           :: HandlerT master IO Text
@@ -48,29 +56,34 @@ class (Yesod master, RenderMessage master FormMessage)
         getLobbyCount         :: Text -> HandlerT master IO Int
         getMatchCount         :: Text -> HandlerT master IO Int
 
+-- Short-hand for the chat module's type.
 type ChatHandler a = forall master. YesodChat master =>
                         HandlerT Chat (HandlerT master IO) a
 
+-- This was defined for the sake of handlerToIO, which only takes master
+-- site handlers (e.g. HandlerT site IO a)
 type ChatHandler' a = HandlerT Chat IO a
 
+-- The client sends messages to this route to be relayed to the specified
+-- recipient.
 postSendR :: ChatHandler ()
 postSendR = do
-        from <-   lift $ runInputPost $ ireq textField "from"
+        from <- lift $ runInputPost $ ireq textField "from"
         to <-   lift $ runInputPost $ ireq textField "to"
         body <- lift $ runInputPost $ ireq textField "message"
         sendEvent to "message" $ return $
             fromText from <> fromText " : " <> fromText body
 
+-- Sends a SourceEvent object to the client which they can use to listen
+-- for messages.
 getReceiveR :: ChatHandler ()
 getReceiveR = do
         Chat chan0 <- getYesod
         chan <- liftIO $ dupChan chan0
-        -- sendWaiApplication blocks.
-        -- sendWaiApplication short circuits (anything after it is not
-        -- reached).
-        {-key <- register $ liftIO $ putStrLn "disconnect"-}
         sendWaiApplication $ eventSourceAppChan chan
 
+-- The client is required to supply a username, which the server will use
+-- when they send messages. The response body contains their unique id.
 postUsernameR :: ChatHandler Text
 postUsernameR = do
         username <- lift $ runInputPost $ ireq textField "username"
@@ -95,17 +108,15 @@ postLobbyR = do
         -- Send event updating the number of people in lobby.
         sendGameStatus game
 
--- Set up a match between a pair of players, and send each of them an sse.
--- The sse specifies whether they go first (player X) or not (player O).
--- Otherwise, do nothing.
+-- Set up a match between a pair of players, and send each of them an SSE.
+-- The SSE specifies whether they go first (player X) or not (player O).
+-- If an opponent couldn't be found, do nothing.
 postSearchR :: ChatHandler ()
 postSearchR = do
         liftIO $ putStrLn "SearchR called"
         pid <- lift $ runInputPost $ ireq textField "id"
         name <- lift $ runInputPost $ ireq textField "name"
         game <- lift $ runInputPost $ ireq textField "game"
-        {-name <- lift getUserName-}
-        {-maybeOpp <- lift searchForOpponent-}
         maybeOpp <- lift $ testSearchForOpponent pid name game
         -- Get opponent id, send an sse to them and this player.
         case maybeOpp of
@@ -119,10 +130,11 @@ postSearchR = do
             Nothing -> return ()
         sendGameStatus game
 
+-- Get the move played from the client's JSON request body. Send
+-- this information to their opponent.
 postTakeTurnR :: ChatHandler ()
 postTakeTurnR = do
-        {-pid   <- lift getUserId-}
-        pid <- lift $ runInputPost $ ireq textField "id"
+        pid   <- lift $ runInputPost $ ireq textField "id"
         move  <- lift $ runInputPost $ ireq textField "move"
         game  <- lift $ runInputPost $ ireq textField "game"
         maybeOppId <- lift $ getCurrentOpponent pid game
@@ -177,10 +189,10 @@ postTrackR = do
         runInnerHandler <- lift handlerToIO
         runOuterHandler <- handlerToIO
         lift $ repEventSource $ \_ -> bracketP
-            (do -- Initial setup 
+            (do -- Initial setup.
                 putStrLn "received connection"
             )
-            (\_ -> do  -- Cleanup 
+            (\_ -> do  -- Cleanup. 
                 putStrLn $ "connection terminated"
                 maybeOpp <- runInnerHandlerMaybe $ getCurrentOpponent pid game
                 -- Remove player from lobby.
@@ -200,7 +212,7 @@ postTrackR = do
                 runOuterHandler $ 
                         sendEvent' "" "matchCount" [fromShow matchCount]
             )
-            $ \_ -> forever $ do -- Ping to check the connection 
+            $ \_ -> forever $ do -- Ping to check the connection.
                 liftIO $ do
                     putStrLn "delaying"
                     threadDelay 5000000
@@ -215,6 +227,8 @@ postTrackR = do
               liftIO $ writeChan chan $ 
                 ServerEvent (Just (fromText $ toId ++ suffix)) Nothing message
 
+-- Send an SSE to a particular client (every client receives this message,
+-- but only one will be listening for it).
 sendEvent :: Text -> Text -> [Builder] -> ChatHandler ()
 sendEvent toId suffix message = do
     Chat chan <- getYesod
@@ -222,6 +236,7 @@ sendEvent toId suffix message = do
                                 Nothing
                                 message
 
+-- Send the number of players in lobbies/matches.
 sendGameStatus :: Text -> ChatHandler ()
 sendGameStatus game = do
         lobbyCount <- lift $ getLobbyCount game
@@ -229,6 +244,8 @@ sendGameStatus game = do
         sendEvent "" "lobbyCount" [fromShow lobbyCount]
         sendEvent "" "matchCount" [fromShow matchCount]
 
+-- Turn a series of name-value pairs to a JSON object stored in
+-- a [Builder].
 jsonBuilder :: [(Text, Text)] -> [Builder]
 jsonBuilder    [] = []
 jsonBuilder pairs = 

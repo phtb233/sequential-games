@@ -11,12 +11,10 @@ getConnect3R = defaultLayout $ do
         $(widgetFile "connect3")
         chatWidget ChatR
 
+-- Respond with an optimal move.
 postConnect3R :: Handler Value
 postConnect3R = do 
                 moves <- requireJsonBody
                 let nmove = nextMove moves
                 liftIO $ print nmove
                 returnJson $ nmove
-
-borderStyle :: String
-borderStyle = "3px solid #EEE;"

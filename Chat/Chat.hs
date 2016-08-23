@@ -7,7 +7,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 module Chat.Chat where
-
 import Chat.Data
 import Yesod
 import ClassyPrelude
@@ -16,6 +15,7 @@ import Settings (widgetFile)
 instance YesodChat master => YesodSubDispatch Chat (HandlerT master IO) where
         yesodSubDispatch = $(mkYesodSubDispatch resourcesChat)
 
+-- Define the chat module as a widget.
 chatWidget :: YesodChat master
            => (Route Chat -> Route master) -> WidgetT master IO ()
 chatWidget toMaster = do

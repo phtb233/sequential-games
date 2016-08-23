@@ -9,8 +9,7 @@ getSudokuR = defaultLayout $ do
 
 postSudokuR :: Handler Value
 postSudokuR = do
-        clues <- requireJsonBody :: Handler [Maybe Int]
-        {-liftIO $ print $ length clues-}
-        let solution = getSolution clues
-        liftIO $ print solution
-        returnJson solution
+    clues <- requireJsonBody :: Handler [Maybe Int]
+    let solution = getSolution clues
+    liftIO $ print solution
+    returnJson solution

@@ -12,7 +12,6 @@ getTicTacToeR =
             setTitle "TicTacToe"
             $(widgetFile "tictactoe")
             chatWidget ChatR
-        
 
 -- Accept a request, specifying the moves that have been taken, and respond
 -- with an optimal move.
@@ -22,6 +21,4 @@ postTicTacToeR = do
         let nmove = nextMove moves
         returnJson $ nmove 
 
-borderStyle :: String
-borderStyle = "3px solid #EEE;"
 

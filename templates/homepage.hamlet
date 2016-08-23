@@ -34,14 +34,6 @@
                 <li>A predicate that articulates the win conditions
                 <li>The maximum number of turns that can occur during play
         <p>
-            While this requirement implies that a great number of games can
-            be modelled, the user must know all the moves that can be chosen
-            at any time: this rules out games such as Nim (matchsticks), which
-            offers players the option to remove a varied number of matches
-            only restricted by those available. The river crossing game
-            is another example which cannot be modelled; the maximum number
-            of turns is not fixed.
-        <p>
             The complexity of the puzzle (the number of moves available, the
             number of turns and the computation time of determining victory)
             affects the algorithm's speed exponentially, thus only

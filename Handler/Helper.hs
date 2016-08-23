@@ -2,10 +2,10 @@
 {-# LANGUAGE RecordWildCards #-}
 module Handler.Helper where
 
+-- Some miscellaneous helpers, mostly for CSS mixins.
+
 import Text.Lucius
 import ClassyPrelude.Yesod
-import Data.Text (pack)
-import Yesod
 
 rounded :: String -> Mixin
 rounded val =
@@ -49,3 +49,6 @@ chunks _ [] = []
 chunks n xs = let (this,rest) = splitAt n xs
               in this : chunks n rest
 
+
+borderStyle :: String
+borderStyle = "3px solid #EEE;"

@@ -2,6 +2,26 @@
 
 [Demo](http://www.sequential-games.online)
 
+**Directories and files containing code relevant to the project:**
+- Chat/
+  - Chat.hs
+  - Data.hs
+- Handler/
+  - Connect3.hs
+  - GetSudokuPuzzle.hs
+  - Helper.hs
+  - Home.hs
+  - NQueens.hs
+  - Sudoku.hs
+  - TicTacToe.hs
+- templates/
+  - chat.\*
+  - connect3.\*
+  - nqueens.\*
+  - sudoku.\*
+  - tictactoe.\*
+- Foundation.hs (lines 164 onwards)
+
 ###Description
             
 ####The Selection Monad:
