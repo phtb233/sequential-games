@@ -1,3 +1,5 @@
+-- NOTE: This code was generated, and not written by the project's author.
+
 -- | Common handler functions.
 module Handler.Common where
 

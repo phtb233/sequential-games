@@ -1,3 +1,6 @@
+#NOTE: This code was generated, and not written by the project's author.
+ 
+ 
 # Values formatted like "_env:ENV_VAR_NAME:default_value" can be overridden by the specified environment variable.
 # See https://github.com/yesodweb/yesod/wiki/Configuration#overriding-configuration-values-with-environment-variables
 

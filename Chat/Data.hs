@@ -176,7 +176,9 @@ postStopSearchR = do
         sendGameStatus game
 
 -- Taken from Michael Snoyman, Google Groups:
--- https://groups.google.com/forum/#!topic/yesodweb/UFZaplhoTU0
+-- URL  : https://groups.google.com/forum/#!topic/yesodweb/UFZaplhoTU0
+-- Date : 01/06/2014
+
 -- Accept an AJAX request, respond with infinite loop pinging the client.
 -- When ping fails, user has disconnected. Remove them from lobby/matches.
 postTrackR :: ChatHandler TypedContent

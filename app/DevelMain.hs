@@ -1,3 +1,5 @@
+-- NOTE: This code was generated, and not written by the project's author.
+
 -- | Running your app inside GHCi.
 --
 -- To start up GHCi for usage with Yesod, first make sure you are in dev mode:

@@ -1,3 +1,5 @@
+-- NOTE: This code was generated, and not written by the project's author.
+
 {-# Language CPP #-}
 -- | Settings are centralized, as much as possible, into this file. This
 -- includes database connection settings, static file locations, etc.
