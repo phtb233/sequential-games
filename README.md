@@ -1,7 +1,5 @@
 # Modelling Sequential Games using the Selection Monad
 
-[Demo](http://www.sequential-games.online)
-
 **Directories and files containing code relevant to the project:**
 - Chat/
   - Chat.hs
@@ -22,9 +20,9 @@
   - tictactoe.\*
 - Foundation.hs (lines 164 onwards)
 
-###Description
+##Description
             
-####The Selection Monad:
+##The Selection Monad:
 
 ```haskell
 type J r x = (x -> r) -> x
@@ -39,7 +37,7 @@ This site hosts a series of prototypes demonstrating the selection monad's abili
 While this requirement implies that a great number of games can be modelled, the user must know all the moves that can be chosen at any time: this rules out games such as Nim (matchsticks), which offers players the option to remove a varied number of matches only restricted by those available. The river crossing game is another example which cannot be modelled; the maximum number
 of turns is undetermined.
 
-###Implementation
+##Implementation
 The original works that produced this computation provided it in Haskell, leveraging it's laziness and infinite lists to define complicated structures and benefit from partial evaluation. Further experimentation has revealed that the algorithm supports the parallel computation of all possible, optimal outcomes (another facility greatly simplified by Haskell). Communication between the site and the game logic is handled by Yesod, a web framework written in said language.
 
 Additionally, the competitive games are accompanied with an online multiplayer/chat option, should the AI prove disatisfactory.
