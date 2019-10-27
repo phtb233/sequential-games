@@ -34,11 +34,4 @@ This site hosts a series of prototypes demonstrating the selection monad's abili
 2. A predicate that articulates the win conditions
 3. The maximum number of turns that can occur during play
 
-While this requirement implies that a great number of games can be modelled, the user must know all the moves that can be chosen at any time: this rules out games such as Nim (matchsticks), which offers players the option to remove a varied number of matches only restricted by those available. The river crossing game is another example which cannot be modelled; the maximum number
-of turns is undetermined.
-
-#### Implementation
-The original works that produced this computation provided it in Haskell, leveraging it's laziness and infinite lists to define complicated structures and benefit from partial evaluation. Further experimentation has revealed that the algorithm supports the parallel computation of all possible, optimal outcomes (another facility greatly simplified by Haskell). Communication between the site and the game logic is handled by Yesod, a web framework written in said language.
-
-Additionally, the competitive games are accompanied with an online multiplayer/chat option, should the AI prove disatisfactory.
-
+While this requirement implies that a great number of games can be modelled, the user must know all the moves that can be chosen at any time: this rules out games such as Nim (matchsticks), which offers players the option to remove a varied number of matches only restricted by those available. The river crossing game is another example which cannot be modelled; the maximum number of turns is not fixed.
