@@ -66,7 +66,7 @@ makeFoundation appSettings = do
         (appStaticDir appSettings)
     -- Added for the chat subsite.
     chan <- newChan
-    getChat <- return $ (Chat chan)
+    getChat <- return $ Chat chan
     getTicTacToeLobby <- MV.newMVar []
     getConnect3Lobby  <- MV.newMVar []
     getTicTacToeMatches <- MV.newMVar Map.empty
