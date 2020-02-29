@@ -1,0 +1,53 @@
+#puzzle-main {
+    width: 100%;
+}
+
+^{ adaptiveText }
+
+.cell-row {
+    width: 100%;
+    height: 12.5%;
+}
+
+.cell {
+    /*background-color: white;*/
+    width: 12.5%;
+    height: 100%;
+    border: 1px solid #CCC;
+    float: left;
+}
+
+.queen {
+    background-image: url("@{StaticR img_queen_png}");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.cell:hover {
+    background-color: #CCC;
+}
+
+#message {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 9%;
+}
+
+#button-bar {
+    bottom: 7%;
+    width: 100%;
+    position: absolute;
+    div {
+        margin: 0 auto;
+        width: 50%;
+        float: left;
+        button { 
+            font-size: 1.5em; 
+            display: block;
+            margin: 0 auto;
+        }
+    }
+}
+
+/*^{ adaptiveText }*/
