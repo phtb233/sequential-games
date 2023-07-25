@@ -17,9 +17,9 @@ pPar :: [Move] -> [Move] -> R
 pPar preceding ms = value (outcome X (preceding ++ ms) ([], []))
 
 parEpsilons :: [Move] -> [[Move] -> GL.J R Move]
-parEpsilons preceding = take (9 - length preceding) all'
-    where all = epsilonX : epsilonO : all
-          all' = drop (length preceding) all
+parEpsilons preceding = take (9 - length preceding) a'
+    where a = epsilonX : epsilonO : a
+          a' = drop (length preceding) a
           epsilonX h = GL.argsup (poolOfMoves `GL.setMinus` h)
           epsilonO h = GL.arginf (poolOfMoves `GL.setMinus` h)
           poolOfMoves = [0..8] \\ preceding
