@@ -22,6 +22,11 @@ import Data.Conduit (bracketP, yield)
 import Control.Concurrent (threadDelay)
 import Control.Monad.Logger (MonadLogger(monadLoggerLog), defaultLoc)
 import Utils (logInfoHelper)
+import qualified Network.Wai as W
+import qualified Data.IORef as I
+import Yesod.Core.Types (GHState(..), HandlerFor (HandlerFor), HandlerData (..), SubHandlerFor (SubHandlerFor))
+import ClassyPrelude.Conduit (runResourceT)
+import Control.Monad.Trans.Resource (withInternalState)
 
 newtype Chat = Chat (Chan ServerEvent)
 
@@ -194,6 +199,7 @@ postTrackR = do
         runInnerHandlerInt <- liftHandler handlerToIO
         runInnerHandler <- liftHandler handlerToIO
         runOuterHandler <- liftHandler handlerToIO
+        runSubHandler <- subHandlerToIO
         liftHandler $ repEventSource $ \_ -> bracketP
             (do -- Initial setup.
                 runOuterHandler $ logInfoHelper "postTrackR" "received connection"
@@ -213,10 +219,10 @@ postTrackR = do
                   _ -> runInnerHandler $ logInfoHelper "postTrackR" "Couldn't find the opponent"
                 lobbyCount <- runInnerHandlerInt $ getLobbyCount game
                 matchCount <- runInnerHandlerInt $ getMatchCount game
-                runOuterHandler $
-                        sendEvent' "" "lobbyCount" [fromShow lobbyCount]
-                runOuterHandler $
-                        sendEvent' "" "matchCount" [fromShow matchCount]
+                runSubHandler $
+                        sendEvent "" "lobbyCount" [fromShow lobbyCount]
+                runSubHandler $
+                        sendEvent "" "matchCount" [fromShow matchCount]
             )
             $ \_ -> forever $ do -- Ping to check the connection.
                 liftIO $ do
@@ -261,4 +267,44 @@ jsonBuilder pairs =
       comma  = fromText ","
   in  leftb ++ intersperse comma body ++ rightb
 
+
+-- Copied from https://hackage.haskell.org/package/yesod-core-1.6.24.3/docs/src/Yesod.Core.Handler.html#handlerToIO
+subHandlerToIO :: MonadIO m => SubHandlerFor sub master (SubHandlerFor sub master a -> m a)
+subHandlerToIO = 
+    SubHandlerFor $ \oldHandlerData -> do
+    -- Take just the bits we need from oldHandlerData.
+    let newReq = oldReq { reqWaiRequest = newWaiReq }
+          where
+            oldReq    = handlerRequest oldHandlerData
+            oldWaiReq = reqWaiRequest oldReq
+            newWaiReq = oldWaiReq { W.requestBody = return mempty
+                                  , W.requestBodyLength = W.KnownLength 0
+                                  }
+        oldEnv = handlerEnv oldHandlerData
+    newState <- liftIO $ do
+      oldState <- I.readIORef (handlerState oldHandlerData)
+      return $ oldState { ghsRBC = Nothing
+                        , ghsIdent = 1
+                        , ghsCache = mempty
+                        , ghsCacheBy = mempty
+                        , ghsHeaders = mempty }
+
+    -- xx From this point onwards, no references to oldHandlerData xx
+    liftIO $ evaluate (newReq `seq` oldEnv `seq` newState `seq` ())
+
+    -- Return HandlerFor running function.
+    return $ \(SubHandlerFor f) ->
+      liftIO $
+      runResourceT $ withInternalState $ \resState -> do
+        -- The state IORef needs to be created here, otherwise it
+        -- will be shared by different invocations of this function.
+        newStateIORef <- liftIO (I.newIORef newState)
+        let newHandlerData =
+              HandlerData
+                { handlerRequest  = newReq
+                , handlerEnv      = oldEnv
+                , handlerState    = newStateIORef
+                , handlerResource = resState
+                }
+        liftIO (f newHandlerData)
 
