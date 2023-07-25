@@ -69,6 +69,8 @@ $(function(){
                 url  : "@{NQueensR}",
                 data : JSON.stringify(moves),
                 success : onReceivedSolution,
+                dataType: "json",
+                contentType: "application/json",
                 timeout : 5000,
                 error : function(){
                     enableControls();

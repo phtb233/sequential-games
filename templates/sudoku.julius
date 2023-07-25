@@ -216,6 +216,8 @@
                     type : "POST",
                     url  : "@{SudokuR}",
                     data : JSON.stringify(currentPuzzle), 
+                    dataType: "json",
+                    contentType: "application/json",
                     success : onSolutionReceived,
                     error : function(){
                       activateControls(

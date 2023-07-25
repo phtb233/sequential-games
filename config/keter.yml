@@ -18,8 +18,8 @@ stanzas:
     #
     # The path given is for Stack projects. If you're still using cabal, change
     # to
-    # exec: ../dist/build/new-sequential-games/new-sequential-games
-    exec: ../dist/bin/new-sequential-games
+    # exec: ../dist/build/sequential-games/sequential-games
+    exec: ../dist/bin/sequential-games
 
     # Command line options passed to your application.
     args: []
@@ -28,7 +28,7 @@ stanzas:
       # You can specify one or more hostnames for your application to respond
       # to. The primary hostname will be used for generating your application
       # root.
-      - www.new-sequential-games.com
+      - www.sequential-games.com
 
     # Enable to force Keter to redirect to https
     # Can be added to any stanza
@@ -37,7 +37,7 @@ stanzas:
   # Static files.
   - type: static-files
     hosts:
-      - static.new-sequential-games.com
+      - static.sequential-games.com
     root: ../static
 
     # Uncomment to turn on directory listings.
@@ -47,9 +47,9 @@ stanzas:
   - type: redirect
 
     hosts:
-      - new-sequential-games.com
+      - sequential-games.com
     actions:
-      - host: www.new-sequential-games.com
+      - host: www.sequential-games.com
         # secure: false
         # port: 80
 

@@ -1,4 +1,4 @@
-name:    new-sequential-games
+name:    sequential-games
 version: "0.0.0"
 
 dependencies:
@@ -86,7 +86,7 @@ library:
 
 # Runnable executable for our application
 executables:
-  new-sequential-games:
+  sequential-games:
     main: main.hs
     source-dirs: app
     ghc-options:
@@ -94,19 +94,19 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - new-sequential-games
+    - sequential-games
     when:
     - condition: flag(library-only)
       buildable: false
 
 # Test suite
 tests:
-  new-sequential-games-test:
+  sequential-games-test:
     main: Spec.hs
     source-dirs: test
     ghc-options: -Wall
     dependencies:
-    - new-sequential-games
+    - sequential-games
     - hspec >=2.0.0
     - yesod-test
     - microlens

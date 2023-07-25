@@ -192,6 +192,7 @@
                 url: "@{TicTacToeR}",
                 data: JSON.stringify(moves),
                 dataType: "json",
+                contentType: "application/json",
                 success: function(data){
                     takeTurn(O, data);
                 },

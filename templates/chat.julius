@@ -30,8 +30,9 @@
                     $.ajax({
                             type : "POST",
                             url  : "@{toMaster UsernameR}",
-                            data : { "username" : username 
-                                   , "game" : game },
+                            data : { "username" : username, "game" : game },
+                            dataType: "json",
+                            contentType: "application/json",
                             success : success,
                             error   : error
                     });
@@ -109,6 +110,8 @@
                                  , "move" : move 
                                  , "game" : game }
                         , url  : "@{toMaster TakeTurnR}"
+                        , dataType: "json"
+                        , contentType: "application/json"
                         , success : function(data){ 
                         }
                         , error : function(a,code){ 
@@ -146,6 +149,8 @@
                                 , "from"     : myName
                                 , "to"       : oppId },
                             url : "@{toMaster SendR}",
+                            dataType: "json",
+                            contentType: "application/json",
                             success : function(data){
                             },
                             error : function(data, code){
@@ -166,6 +171,8 @@
                 $.ajax({
                           type: "POST"
                         , url : "@{toMaster SearchR}"
+                        , dataType: "json"
+                        , contentType: "application/json"
                         , data : { id   : myId 
                                  , name : myName 
                                  , "game" : game }
@@ -218,6 +225,8 @@
                             , name : myName
                             , "game" : game } 
                   , url  : "@{toMaster LobbyR}"
+                  , dataType: "json"
+                  , contentType: "application/json"
                   , success : onAddedToLobby
                   , error : function(xhr, code){
                         addError("Failed to join the lobby.");
@@ -234,6 +243,8 @@
                   , data : { "id" : myId, "name" : myName 
                            , "game" : game }
                   , url  : "@{toMaster CloseR}"
+                  , dataType: "json"
+                  , contentType: "application/json"
                   , error : function(a,code){ 
                       addError("There was a problem closing the match.");
                       quitMultiplayer();
@@ -255,6 +266,8 @@
                            , "name" : myName 
                            , "game" : game }
                   , url  : "@{toMaster StopSearchR}"
+                  , dataType: "json"
+                  , contentType: "application/json"
                   , error : function(a,code){ 
                                 addError("Failed to exit lobby"); 
                                 quitMultiplayer();
@@ -274,6 +287,8 @@
             $.ajax({
                     type : "POST"
                   , url  : "@{toMaster TrackR}"
+                  , dataType: "json"
+                  , contentType: "application/json"
                   , data : { id : myId , name : myName, "game" : game }
             });
         };
