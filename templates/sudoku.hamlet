@@ -1,0 +1,49 @@
+<div #puzzle-main>
+    ^{ navbar }
+    ^{ adaptiveText }
+    <div #puzzle-wrapper>
+        <div #puzzle>
+            <div .puzzle-row>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+            <div .puzzle-row>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+            <div .puzzle-row>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+            <div .puzzle-row>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+                <div .cell>
+                    <input type=number min=1 max=4>
+    <div #button-bar>
+        <div>
+            <button #another-puzzle>Another Puzzle
+        <div>
+            <button #check-answers>Check Answers
+        <div>
+            <button #solve-puzzle>Solve Puzzle
+    <p #message>

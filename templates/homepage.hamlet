@@ -23,7 +23,7 @@
             This site hosts a series of prototypes demonstrating the selection
             monad's ability to solve sequential games while exhibiting the
             feasibility of relying on this algorithm to determine optimal moves
-            in real-time. This data is fashioned as an AI controlled opponent
+            in real-time. This monad is fashioned as an AI controlled opponent
             the player can play against. The computation provides a generic
             interface for defining information-complete, turn-based games and
             singleplayer puzzles, requiring that the user specify three
@@ -34,17 +34,9 @@
                 <li>A predicate that articulates the win conditions
                 <li>The maximum number of turns that can occur during play
         <p>
-            While this requirement implies that a great number of games can
-            be modelled, the user must know all the moves that can be chosen
-            at any time: this rules out games such as Nim (matchsticks), which
-            offers players the option to remove a varied number of matches
-            only restricted by those available. The river crossing game
-            is another example which cannot be modelled; the maximum number
-            of turns is not fixed.
-        <p>
             The complexity of the puzzle (the number of moves available, the
-            number of turns and the computational time of determining victory)
-            affect the algorithm's completion time exponentially; thus, only
+            number of turns and the computation time of determining victory)
+            affects the algorithm's speed exponentially, thus only
             simplified puzzles are demonstrated here. If the server takes too
             long to offer an optimal move, one is chosen at random.
 <div .row>
@@ -58,14 +50,14 @@
             parallel computations of multiple possible outcomes
             (another facility greatly simplified by Haskell). #
              Communication between the site and the game logic is handled by
-             Yesod (a web framework also written in Haskell).
+             Yesod.
         <p>
             Additionally, the competitive games are accompanied with an online
             multiplayer/chat option, if the AI proves disatisfactory.
         <p>
             The logic for the #
-            <a href=https://github.com/phtb233/solvable-games>games, the monad
-            , and #
+            <a href=https://github.com/phtb233/solvable-games>games, the monad,#
+            \ and #
             <a href=https://github.com/phtb233/sequential-games>this site
             \ are available on Github.
 <footer .sticky-footer>

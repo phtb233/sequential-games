@@ -1,0 +1,147 @@
+$(function(){
+
+    var $solve_puzzle, cells = [], moves = [], $cells, init, onCellClick,
+    attacks, $message, $puzzle, onSolvePuzzleClick, disableControls, 
+    enableControls, onReceivedSolution, clearPuzzle, fillPuzzle, 
+    $clear_puzzle, startResetTimeout, resetPuzzleTimeout, resetPuzzle;
+
+    init = function(){
+        $cells = $(".cell");
+        $puzzle = $("#puzzle");
+        $solve_puzzle = $("#solve-puzzle");
+        $clear_puzzle = $("#clear-puzzle");
+        $message = $("#message");
+        var i = 0;
+        $cells.each(function(index, elt){
+            var x = i % 8;
+            var y = Math.floor(i / 8);
+            var cell = { filled : false, jq : $(elt), "x" : x, "y" : y };
+            cells.push(cell);
+            //$(elt).on("click", onCellClick);
+            i++;
+        });
+        enableControls();
+    };
+
+    onCellClick = function(e){
+        var cell;
+        var $target = $(e.target);
+        cell = cells.find(function(elt){
+            var $cell = elt.jq;
+            return $target.is($cell);
+        });
+        if(cell){
+            if(!cell.filled){
+                if(attacks(cell)){
+                    $message.text("You cannot place a queen here.");
+                    return false;
+                } else {
+                    // Enter a new queen.
+                    cell.filled = true;
+                    $target.addClass("queen");
+                    moves[cell.y] = cell.x;
+                    var nonNullMoves = moves.filter(function(elt){
+                        return !!elt;
+                    });
+                    if(nonNullMoves.length < 8){
+                        $message.text("");
+                    } else {
+                        $message.text(
+                            "You have successfully solved the puzzle.");
+                        disableControls();
+                        startResetTimeout();
+                    }
+                }
+            } else {
+                // Remove current queen in this cell.
+                cell.filled = false;
+                $target.removeClass("queen");
+                moves[cell.y] = null;
+                $message.text("Removed a queen from the board.");
+            }
+        }
+    };
+
+    onSolvePuzzleClick = function(e){
+        disableControls();
+        $.ajax({
+                type : "POST",
+                url  : "@{NQueensR}",
+                data : JSON.stringify(moves),
+                success : onReceivedSolution,
+                timeout : 5000,
+                error : function(){
+                    enableControls();
+                    $message.text("There was trouble contacting the server.");
+                }
+        });
+    };
+
+    onReceivedSolution = function(data){
+        if(!data){
+            $message.text("The server couldn't determine a solution.");
+            enableControls();
+        } else {
+            $message.text("This solution was determined by the server.");
+            fillPuzzle(data);
+            startResetTimeout();
+        }
+    };
+
+    clearPuzzle = function(){
+        cells.forEach(function(elt){
+            elt.filled = false;
+            elt.jq.removeClass("queen");
+        });
+        moves = [];
+    };
+
+    fillPuzzle = function(ms){
+        var i;
+        if(ms.length > 8){
+            throw Error("Fillgrid was passed incorrect values (more than 8).");
+        }
+        clearPuzzle();
+        // Fill in cells specified in ms
+        for(i = 0; i < 8; i++){
+            var cell = cells.find(function(elt){
+                return elt.x === ms[i] && 
+                elt.y === i;
+            });
+            cell.filled = true;
+            cell.jq.addClass("queen");
+        }
+    };
+
+    disableControls = function(){
+        $puzzle.off("click");
+        $clear_puzzle.off("click");
+    };
+
+    startResetTimeout = function(){
+        resetPuzzleTimeout = setTimeout(resetPuzzle, 4000);
+    };
+
+    resetPuzzle = function(){
+        clearPuzzle();
+        enableControls();
+        $message.text("");
+    };
+
+    enableControls = function(){
+        $puzzle.on("click", onCellClick);
+        $solve_puzzle.one("click", onSolvePuzzleClick);
+        $clear_puzzle.on("click", clearPuzzle);
+    };
+
+    attacks = function(thisCell){
+        return cells.some(function(cell, i, a){
+            return cell.filled && 
+            (cell.x === thisCell.x ||
+            cell.y === thisCell.y ||
+            Math.abs(cell.x - thisCell.x) === Math.abs(cell.y - thisCell.y));
+        });
+    };
+
+    init();
+});

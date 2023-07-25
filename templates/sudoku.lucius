@@ -1,0 +1,70 @@
+#puzzle-main {
+    width: 100%;
+}
+
+#button-bar {
+    bottom: 7%;
+    width: 100%;
+    position: absolute;
+    div {
+        margin: 0 auto;
+        width: 33.3%;
+        float: left;
+        button { 
+            font-size: 1.5em; 
+            display: block;
+            margin: 0 auto;
+        }
+    }
+}
+
+.puzzle-row {
+    width: 100%;
+    height: 25%;
+}
+
+.cell {
+
+    background-color: transparent;
+    width: 25%;
+    height: 100%;
+    float: left;
+    input {
+        display: block;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-size: large;
+    }
+}
+
+/*http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box*/
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+#message {
+    position : absolute;
+    top: 9%;
+    text-align: center;
+    width: 100%;
+}
+
+@media (min-width:992px){ /*md*/ 
+    #button-bar div button {
+        font-size : 0.7em;
+    }
+}
+
+@media (min-width:1200px){ /*lg*/ 
+    #button-bar div button {
+        font-size : 0.7em;
+    }
+}
+
+/*^{adaptiveText}*/

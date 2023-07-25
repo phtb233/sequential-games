@@ -64,7 +64,7 @@
     top: 10%;
     p {
         text-align: center;
-        color: #AAA;
+        color: #777;
         font-family: monospace;
         font-size: 0.8em;
     }
@@ -122,29 +122,4 @@
     /*#puzzle-wrapper {*/
 
     /*}*/
-}
-
-@media (max-width:767px){ /*xs*/ 
-    .player-info { 
-        top: 8%; 
-    }
-    body { font-size: smaller; }
-}
-@media (min-width:768px){ /*sm*/ 
-    .player-info { 
-        top: 8%; 
-    }
-    body { font-size: small; }
-}
-@media (min-width:992px){ /*md*/ 
-    .player-info { 
-        top: 20%; 
-    }
-    body {font-size: large;}
-}
-@media (min-width:1200px){ /*lg*/ 
-    .player-info { 
-        top: 20%; 
-    }
-    body {font-size: large;}
 }

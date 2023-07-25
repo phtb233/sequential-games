@@ -1,6 +1,9 @@
 # After you've edited this file, remove the following line to allow
 # `yesod keter` to build your bundle.
-#user-edited: false
+#
+# Also, please make sure that `port` value on `config/settings.yaml` is set to
+# use `PORT` env variable.
+user-edited: false
 
 # A Keter app is composed of 1 or more stanzas. The main stanza will define our
 # web application. See the Keter documentation for more information on
@@ -12,7 +15,11 @@ stanzas:
 
     # Name of your executable. You are unlikely to need to change this.
     # Note that all file paths are relative to the keter.yml file.
-    exec: ../.stack-work/install/x86_64-linux/lts-6.7/7.10.3/bin/sequential-games
+    #
+    # The path given is for Stack projects. If you're still using cabal, change
+    # to
+    # exec: ../dist/build/new-sequential-games/new-sequential-games
+    exec: ../dist/bin/new-sequential-games
 
     # Command line options passed to your application.
     args: []
@@ -21,8 +28,8 @@ stanzas:
       # You can specify one or more hostnames for your application to respond
       # to. The primary hostname will be used for generating your application
       # root.
-      - www.sequential-games.online
-        #52.209.60.233
+      - www.new-sequential-games.com
+
     # Enable to force Keter to redirect to https
     # Can be added to any stanza
     requires-secure: false
@@ -30,7 +37,7 @@ stanzas:
   # Static files.
   - type: static-files
     hosts:
-      - static.sequential-games.com
+      - static.new-sequential-games.com
     root: ../static
 
     # Uncomment to turn on directory listings.
@@ -40,9 +47,9 @@ stanzas:
   - type: redirect
 
     hosts:
-      - www.sequential-games.online
+      - new-sequential-games.com
     actions:
-      - host: www.sequential-games.online
+      - host: www.new-sequential-games.com
         # secure: false
         # port: 80
 

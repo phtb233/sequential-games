@@ -1,5 +1,5 @@
 {-# LANGUAGE PackageImports #-}
-import "sequential-games" Application (develMain)
+import "new-sequential-games" Application (develMain)
 import Prelude (IO)
 
 main :: IO ()

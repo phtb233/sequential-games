@@ -1,0 +1,275 @@
+@media (max-width:767px){.player-info{top:8%}body{font-size:smaller}}@media (min-width:768px){.player-info{top:8%}body{font-size:small}}@media (min-width:992px){.player-info{top:20%}body{font-size:large}}@media (min-width:1200px){.player-info{top:20%}body{font-size:large}}#puzzle-main {
+    width: 80%;
+}
+^ {
+    adaptiveText }
+
+.puzzle-row {
+    width: 100%;
+    height: 33.3%;
+}
+.cell {
+    background-color: transparent;
+    width: 33.3%;
+    height: 100%;
+    float: left;
+    border: 3px solid #EEE;;
+}
+.cell:first-child {
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+.cell:last-child {
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+.puzzle-row:first-child .cell {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+.puzzle-row:last-child .cell {
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+}
+.cell:hover {
+    background-color: #EEE;
+}
+.cell .cross,.cell .nought {
+    width: 0%;
+    height: 0%;
+    margin: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('http://localhost:3000/static/img/tictactoe.png?etag=esrUXXSe');
+    -webkit-transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+    -moz-transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+    -o-transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+    transition: width 0.2s ease-out, height 0.2s ease-out, margin 0.2s ease-out;
+}
+.cross {
+    background-position: 100%;
+}
+#hident2 {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    float: right;
+    width: 20%;
+    border: none;
+    border-left: 1px solid #999;
+}
+#hident2 p,#hident2 input,#hident2 textarea {
+    font-size: 0.9em;
+}
+#hident4 {
+    position: absolute;
+    bottom: 0px;
+    width: 80%;
+    height: 8%;
+    border: none;
+    border-top: 1px solid #999;
+    resize: none;
+    font-size: 0.9em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+#hident5 {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 20%;
+    height: 8%;
+    background-color: #6D4;
+    color: #FFF;
+    border: none;
+    overflow: hidden;
+}
+#hident5:hover {
+    background-color: #4B2;
+}
+#hident4:focus,#hident5:focus,#hident7:focus,#hident6:focus {
+    outline: none;
+}
+#hident3 {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    height: 92%;
+    width: 100%;
+    font-family: monospace;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    color: #777;
+}
+#hident3 p {
+    margin-top: 0.7em;
+}
+#hident6 {
+    display: block;
+    margin: 2em auto 0;
+    text-align: center;
+    border: none;
+    border-bottom: 1px dashed #CCC;
+}
+#hident7 {
+    background-color: transparent;
+    border: 1px solid #CCC;
+    display: block;
+    margin: 2em auto 0;
+    font-size: 0.9em;
+    color: #777;
+}
+#hident7:hover {
+    background-color: #777;
+    color: white;
+}
+#hident8 {
+    color: #C22;
+    font-style: italic;
+}
+#globe {
+    font-size: 0.9em;
+}
+@media (max-width:767px) {
+    #hident2,#globe,#connect {
+        visibility: hidden;
+    }
+    #puzzle-main {
+        width: 100%;
+    }
+}
+@media (min-width:768px) {
+    #hident2,#globe,#connect {
+        visibility: hidden;
+    }
+    #puzzle-main {
+        width: 100%;
+    }
+}
+@media (min-width:992px) {
+    #hident2,#globe,#connect {
+        visibility: visible;
+    }
+    #puzzle-main {
+        width: 80%;
+    }
+}
+@media (min-width:1200px) {
+}
+#nav-bar {
+    position: absolute;
+    top: 2%;
+    width: 100%;
+    font-size: 1.2em;
+    color: #888;
+}
+#nav-bar div {
+    float: left;
+    width: 20%;
+}
+#nav-bar div span {
+    display: block;
+    text-align: center;
+}
+#puzzle-wrapper {
+    position: absolute;
+    width: 18em;
+    height: 18em;
+    top: 50%;
+    left: 50%;
+    margin-left: -9em;
+    margin-top: -9em;
+}
+#puzzle {
+    width: 100%;
+    height: 100%;
+}
+#puzzle-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: -1;
+}
+.player-info {
+    position: absolute;
+    text-align: center;
+}
+.player-info h1 {
+    font-size: 1.5em;
+}
+#player-1-info {
+    left: 5%;
+}
+#player-2-info {
+    right: 5%;
+}
+#whoseTurn {
+    position: absolute;
+    width: 50%;
+    left: 25%;
+    bottom: 5%;
+    text-align: center;
+    font-size: 1.5em;
+}
+#globe {
+    position: absolute;
+    top: 10%;
+    right: 5%;
+}
+#connect {
+    position: absolute;
+    left: 5%;
+    top: 10%;
+}
+#connect p {
+    text-align: center;
+    color: #777;
+    font-family: monospace;
+    font-size: 0.8em;
+}
+#cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    z-index: 50;
+    opacity: 0;
+}
+#messageBox {
+    position: absolute;
+    width: 30em;
+    height: 26em;
+    background-color: white;
+    z-index: 60;
+    left: 50%;
+    top: 50%;
+    padding: 2em;
+    margin-left: -13em;
+    margin-top: -13em;
+}
+#messageBox div {
+    text-align: center;
+    margin-top: 10%;
+}
+#messageBox button {
+    border: none;
+    padding: 0.7em 1em;
+    background-color: #DDD;
+    font-size: 2em;
+    margin-bottom: 1em;
+}
+#messageBox button:hover {
+    background-color: #AAA;
+}
+#messageBox button:focus {
+    outline: none;
+}
+#messageBox p {
+    font-size: 200%;
+    margin-bottom: 2em;
+}
+@media (max-width:767px) and (orientation: landscape) {
+}
+@media (max-width:767px) and (orientation: portrait) {
+}

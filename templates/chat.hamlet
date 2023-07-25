@@ -1,6 +1,6 @@
 <div ##{chat}>
     <div ##{output}>
-        <p ##{notice}>You must be logged in to chat.
+        <p ##{notice}>You must be logged in to chat and face other players.
         <input type=text ##{uname} placeholder=Username>
         <button ##{login}>Login
         <p ##{message}>

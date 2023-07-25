@@ -110,14 +110,11 @@
                                  , "game" : game }
                         , url  : "@{toMaster TakeTurnR}"
                         , success : function(data){ 
-                            console.log(myId +
-                                    " successfully sent their move.");
                         }
                         , error : function(a,code){ 
                             addError("There was a problem while sending" +
                                     " your move to the server.");
                             quitMultiplayer();
-                            addMessage("You are now playing the CPU");
                         }
                 });
             });
@@ -150,7 +147,6 @@
                                 , "to"       : oppId },
                             url : "@{toMaster SendR}",
                             success : function(data){
-                                console.log("message was successfully sent.");
                             },
                             error : function(data, code){
                                 addError("There was a problem sending" + 
@@ -162,14 +158,11 @@
             };
             onAddedToLobby = function(){
                 var secs = 2;
-                console.log("searching for opponents every " + secs 
-                    + " seconds...");
                 searchTimer = setInterval(searchForOpponents, secs * 1000);
                 searchTimeout = setTimeout(cancelSearch, 7 * 1000);
             };
             // Perform search continuously.
             searchForOpponents = function(){
-                console.log("searching now...");
                 $.ajax({
                           type: "POST"
                         , url : "@{toMaster SearchR}"
@@ -186,7 +179,7 @@
 
         quitMultiplayer = function(){
             if(src) src.close(); src = null;
-            console.log (myId + " successfully ended the game.");
+            addMessage("You are now playing the CPU");
             multiplayer = false;
             reset(X);
             oppId = null;
@@ -195,6 +188,8 @@
             resetScores();
             $globe.text("Search");
             $globe.on("click", startSearchHandler);
+            $matchesCount.text("n/a");
+            $lobbyCount.text("n/a");
         };
 
         addMessage = function(message, colour = #{toJSON messageColor}){
@@ -227,7 +222,6 @@
                   , error : function(xhr, code){
                         addError("Failed to join the lobby.");
                         quitMultiplayer();
-                        addMessage("You are now playing the CPU");
                     }
             });
         };
@@ -243,7 +237,6 @@
                   , error : function(a,code){ 
                       addError("There was a problem closing the match.");
                       quitMultiplayer();
-                      addMessage("You are now playing the CPU");
                   }
             });
             return false;
@@ -265,7 +258,6 @@
                   , error : function(a,code){ 
                                 addError("Failed to exit lobby"); 
                                 quitMultiplayer();
-                                addMessage("You are now playing the CPU");
                             }
             });
         };
@@ -293,7 +285,6 @@
             src.addEventListener(myId + "error", function(e){
                 addError(e.data);
                 quitMultiplayer();
-                addMessage("You are now playing the CPU");
             }, false);
             // on message
             src.addEventListener(myId + "message", function(e){
@@ -301,12 +292,7 @@
             }, false);
             // on match
             src.addEventListener(myId + "match", function(e){
-                try {
-                    var data = JSON.parse (e.data);
-                } catch (_) {
-                    console.log("There was an error.\n" +
-                                "data: " + e.data);
-                }
+                var data = JSON.parse (e.data);
                 oppId = data.oppId;
                 oppName = data.oppName;
                 resetScores();
@@ -323,14 +309,11 @@
                 $globe.on("click", quitMultiplayerHandler);
                 if(data.player === X){ // If we're the first player...
                     // let us start first.
-                    console.log("I start first");
                     reset(X);
                 } else if (data.player === O){
-                    console.log("I go second");
                     reset(O);
                 } else {
-                    console.log("unrecognized sse message");
-                    console.log(e.data);
+                    //console.log(e.data);
                 }
             }, false);
             // on opponent's move
@@ -340,13 +323,12 @@
             },false);
             // on server's request to close connection
             src.addEventListener(myId + "close", function(e){
-                quitMultiplayer();
                 addMessage(e.data);
-                addMessage("You are now playing the CPU");
+                quitMultiplayer();
             },false);
             // on matches count update
             src.addEventListener("matchCount", function(e){
-                $matchesCount.text(e.data);
+                $matchesCount.text(parseInt(e.data) * 2);
             }, false);
             // on lobby count update
             src.addEventListener("lobbyCount", function(e){
